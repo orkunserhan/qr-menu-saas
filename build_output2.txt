@@ -1,0 +1,39 @@
+
+> qr-menu-saas@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 6.7s
+  Running TypeScript ...
+  Collecting page data using 19 workers ...
+  Generating static pages using 19 workers (0/3) ...
+✓ Generating static pages using 19 workers (3/3) in 324.6ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /_not-found
+├ ƒ /[locale]
+├ ƒ /[locale]/[slug]
+├ ƒ /[locale]/[slug]/payment-success
+├ ƒ /[locale]/admin
+├ ƒ /[locale]/admin/restaurants/[id]
+├ ƒ /[locale]/admin/restaurants/[id]/analytics
+├ ƒ /[locale]/admin/restaurants/[id]/feedback
+├ ƒ /[locale]/admin/restaurants/[id]/orders
+├ ƒ /[locale]/admin/restaurants/[id]/reports
+├ ƒ /[locale]/admin/restaurants/[id]/settings
+├ ƒ /[locale]/admin/restaurants/[id]/tables
+├ ƒ /[locale]/admin/restaurants/new
+├ ƒ /[locale]/auth/forgot-password
+├ ƒ /[locale]/auth/login
+└ ƒ /[locale]/auth/signup
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

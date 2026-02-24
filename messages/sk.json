@@ -1,0 +1,54 @@
+{
+    "admin": {
+        "dashboard": {
+            "title": "Riadiaci Panel",
+            "restaurants": "Reštaurácie",
+            "addRestaurant": "Pridať reštauráciu",
+            "analytics": "Analytika",
+            "settings": "Nastavenia"
+        },
+        "menu": {
+            "title": "Produkty a Kategórie",
+            "addProduct": "Nový Produkt",
+            "addCategory": "Pridať Kategóriu",
+            "edit": "Upraviť",
+            "delete": "Odstrániť",
+            "availability": "Dostupnosť"
+        },
+        "tables": {
+            "title": "Správa stolov",
+            "view": "Živé Zobrazenie",
+            "edit": "Upraviť Rozloženie",
+            "qr": "QR Kódy"
+        },
+        "settings": {
+            "general": "Všeobecné nastavenia",
+            "language": "Jazyk",
+            "save": "Uložiť",
+            "logout": "Odhlásiť sa"
+        }
+    },
+    "auth": {
+        "login": "Prihlásiť sa",
+        "email": "E-mail",
+        "password": "Heslo",
+        "forgotPassword": "Zabudli ste heslo?",
+        "submit": "Odoslať"
+    },
+    "client": {
+        "menu": "Menu",
+        "order": "Môj košík",
+        "waiter": "Čašník",
+        "rateUs": "Ohodnoťte nás",
+        "empty": "Menu sa pripravuje.",
+        "add": "Pridať",
+        "added": "Pridané",
+        "kcal": "kcal",
+        "min": "min",
+        "total": "Spolu",
+        "complete": "Dokončiť objednávku",
+        "emptyCart": "Váš košík je prázdny.",
+        "orderSuccess": "Objednávka prijatá! 🚀",
+        "orderSuccessMsg": "Odoslané do kuchyne, príprava začala."
+    }
+}

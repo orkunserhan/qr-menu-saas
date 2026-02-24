@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createCategory } from '@/app/admin/actions'
+import { createCategory } from '@/app/[locale]/admin/actions'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 

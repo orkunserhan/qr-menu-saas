@@ -1,0 +1,7 @@
+.next/types/validator.ts(24,44): error TS2344: Type 'Route' does not satisfy the constraint '"/[locale]"'.
+  Type '"/"' is not assignable to type '"/[locale]"'.
+.next/types/validator.ts(24,75): error TS2344: Type 'Route' does not satisfy the constraint '"/[locale]"'.
+  Type '"/"' is not assignable to type '"/[locale]"'.
+.next/types/validator.ts(42,39): error TS2307: Cannot find module '../../app/page.js' or its corresponding type declarations.
+.next/types/validator.ts(57,39): error TS2307: Cannot find module '../../app/layout.js' or its corresponding type declarations.
+app/actions/index.ts(4,1): error TS2308: Module './common-actions' has already exported a member named 'submitFeedback'. Consider explicitly re-exporting to resolve the ambiguity.

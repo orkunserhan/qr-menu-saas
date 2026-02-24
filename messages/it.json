@@ -1,0 +1,54 @@
+{
+    "admin": {
+        "dashboard": {
+            "title": "Cruscotto",
+            "restaurants": "Ristoranti",
+            "addRestaurant": "Aggiungi Ristorante",
+            "analytics": "Analitica",
+            "settings": "Impostazioni"
+        },
+        "menu": {
+            "title": "Prodotti & Categorie",
+            "addProduct": "Nuovo Prodotto",
+            "addCategory": "Aggiungi Categoria",
+            "edit": "Modifica",
+            "delete": "Elimina",
+            "availability": "Disponibilità"
+        },
+        "tables": {
+            "title": "Gestione Tavoli",
+            "view": "Vista dal Vivo",
+            "edit": "Modifica Disposizione",
+            "qr": "Codici QR"
+        },
+        "settings": {
+            "general": "Impostazioni Generali",
+            "language": "Lingua",
+            "save": "Salva",
+            "logout": "Esci"
+        }
+    },
+    "auth": {
+        "login": "Accedi",
+        "email": "E-mail",
+        "password": "Password",
+        "forgotPassword": "Password Dimenticata?",
+        "submit": "Invio"
+    },
+    "client": {
+        "menu": "Menü",
+        "order": "Carrello",
+        "waiter": "Cameriere",
+        "rateUs": "Valuta",
+        "empty": "Il menu è in preparazione.",
+        "add": "Aggiungi",
+        "added": "Aggiunto",
+        "kcal": "kcal",
+        "min": "min",
+        "total": "Totale",
+        "complete": "Completa Ordine",
+        "emptyCart": "Il tuo carrello è vuoto.",
+        "orderSuccess": "Ordine Ricevuto! 🚀",
+        "orderSuccessMsg": "Inviato in cucina."
+    }
+}

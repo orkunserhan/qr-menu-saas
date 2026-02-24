@@ -1,0 +1,63 @@
+{
+    "admin": {
+        "dashboard": {
+            "title": "Admin Dashboard",
+            "myRestaurants": "My Restaurants",
+            "selectRestaurant": "Select a restaurant to manage.",
+            "noRestaurantsTitle": "No restaurants found",
+            "noRestaurantsDesc": "Create your first restaurant to start designing your digital menu.",
+            "createRestaurant": "Create Restaurant",
+            "active": "Active",
+            "inactive": "Inactive",
+            "clickToManage": "Click to manage →",
+            "loggedInAs": "Logged in as:",
+            "restaurants": "Restaurants",
+            "addRestaurant": "Add Restaurant",
+            "analytics": "Analytics",
+            "settings": "Settings"
+        },
+        "menu": {
+            "title": "Products & Categories",
+            "addProduct": "New Product",
+            "addCategory": "Add Category",
+            "edit": "Edit",
+            "delete": "Delete",
+            "availability": "Availability"
+        },
+        "tables": {
+            "title": "Table Management",
+            "view": "Live View",
+            "edit": "Edit Layout",
+            "qr": "QR Codes"
+        },
+        "settings": {
+            "general": "General Settings",
+            "language": "Language",
+            "save": "Save",
+            "logout": "Logout"
+        }
+    },
+    "auth": {
+        "login": "Login",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot Password?",
+        "submit": "Submit"
+    },
+    "client": {
+        "menu": "Menu",
+        "order": "My Cart",
+        "waiter": "Waiter",
+        "rateUs": "Rate Us",
+        "empty": "Menu is getting ready.",
+        "add": "Add",
+        "added": "Added",
+        "kcal": "kcal",
+        "min": "min",
+        "total": "Total",
+        "complete": "Complete Order",
+        "emptyCart": "Your cart is empty.",
+        "orderSuccess": "Order Received! 🚀",
+        "orderSuccessMsg": "Sent to kitchen, preparation started."
+    }
+}

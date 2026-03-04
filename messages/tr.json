@@ -1,0 +1,64 @@
+{
+    "admin": {
+        "dashboard": {
+            "title": "Yönetim Paneli",
+            "myRestaurants": "Restoranlarım",
+            "selectRestaurant": "Yönetmek istediğiniz restoranı seçin.",
+            "noRestaurantsTitle": "Henüz restoranın yok",
+            "noRestaurantsDesc": "İlk restoranını oluşturarak dijital menünü tasarlamaya başla.",
+            "createRestaurant": "Restoran Oluştur",
+            "active": "Aktif",
+            "inactive": "Pasif",
+            "clickToManage": "Yönetmek için tıkla →",
+            "loggedInAs": "Giriş:",
+            "welcome": "Hoş Geldiniz",
+            "restaurants": "Restoranlar",
+            "addRestaurant": "Yeni Restoran Ekle",
+            "analytics": "Analitik",
+            "settings": "Ayarlar"
+        },
+        "menu": {
+            "title": "Ürünler & Kategoriler",
+            "addProduct": "Yeni Ürün Ekle",
+            "addCategory": "Kategori Ekle",
+            "edit": "Düzenle",
+            "delete": "Sil",
+            "availability": "Stok Durumu"
+        },
+        "tables": {
+            "title": "Masa Yönetimi",
+            "view": "Canlı İzle",
+            "edit": "Yerleşim Düzenle",
+            "qr": "QR Kodları"
+        },
+        "settings": {
+            "general": "Genel Ayarlar",
+            "language": "Dil Seçimi",
+            "save": "Kaydet",
+            "logout": "Çıkış Yap"
+        }
+    },
+    "auth": {
+        "login": "Giriş Yap",
+        "email": "E-posta",
+        "password": "Şifre",
+        "forgotPassword": "Şifremi Unuttum",
+        "submit": "Giriş"
+    },
+    "client": {
+        "menu": "Menü",
+        "order": "Sepetim",
+        "waiter": "Garson",
+        "rateUs": "Bizi Değerlendirin",
+        "empty": "Bu menü hazırlanıyor.",
+        "add": "Ekle",
+        "added": "Eklendi",
+        "kcal": "kcal",
+        "min": "dk",
+        "total": "Toplam",
+        "complete": "Siparişi Tamamla",
+        "emptyCart": "Sepetiniz boş.",
+        "orderSuccess": "Siparişiniz Alındı! 🚀",
+        "orderSuccessMsg": "Mutfağa iletildi, hazırlanmaya başlıyor."
+    }
+}

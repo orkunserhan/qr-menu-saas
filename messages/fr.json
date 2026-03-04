@@ -1,0 +1,38 @@
+{
+    "admin": {
+        "dashboard": {
+            "title": "Tableau de Bord",
+            "restaurants": "Restaurants",
+            "addRestaurant": "Ajouter un Restaurant",
+            "analytics": "Analytique",
+            "settings": "Paramètres"
+        },
+        "menu": {
+            "title": "Produits & Catégories",
+            "addProduct": "Nouveau Produit",
+            "addCategory": "Ajouter Catégorie",
+            "edit": "Éditer",
+            "delete": "Effacer",
+            "availability": "Disponibilité"
+        },
+        "tables": {
+            "title": "Gestion des Tables",
+            "view": "Vue en Direct",
+            "edit": "Modifier la Disposition",
+            "qr": "Codes QR"
+        },
+        "settings": {
+            "general": "Réglages Généraux",
+            "language": "Langue",
+            "save": "Enregistrer",
+            "logout": "Déconnexion"
+        }
+    },
+    "auth": {
+        "login": "Connexion",
+        "email": "E-mail",
+        "password": "Mot de passe",
+        "forgotPassword": "Mot de passe oublié?",
+        "submit": "Soumettre"
+    }
+}

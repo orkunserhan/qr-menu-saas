@@ -1,0 +1,54 @@
+{
+    "admin": {
+        "dashboard": {
+            "title": "Dashboard",
+            "restaurants": "Restaurants",
+            "addRestaurant": "Neues Restaurant",
+            "analytics": "Analytik",
+            "settings": "Einstellungen"
+        },
+        "menu": {
+            "title": "Produkte & Kategorien",
+            "addProduct": "Neues Produkt",
+            "addCategory": "Kategorie hinzufügen",
+            "edit": "Bearbeiten",
+            "delete": "Löschen",
+            "availability": "Verfügbarkeit"
+        },
+        "tables": {
+            "title": "Tischverwaltung",
+            "view": "Live-Ansicht",
+            "edit": "Layout ändern",
+            "qr": "QR-Codes"
+        },
+        "settings": {
+            "general": "Allgemeine Einstellungen",
+            "language": "Sprache",
+            "save": "Speichern",
+            "logout": "Abmelden"
+        }
+    },
+    "auth": {
+        "login": "Anmelden",
+        "email": "E-Mail",
+        "password": "Passwort",
+        "forgotPassword": "Passwort vergessen?",
+        "submit": "Absenden"
+    },
+    "client": {
+        "menu": "Speisekarte",
+        "order": "Warenkorb",
+        "waiter": "Kellner",
+        "rateUs": "Bewerten",
+        "empty": "Menü wird vorbereitet.",
+        "add": "Hinzufügen",
+        "added": "Hinzugefügt",
+        "kcal": "kcal",
+        "min": "min",
+        "total": "Gesamt",
+        "complete": "Bestellung abschließen",
+        "emptyCart": "Ihr Warenkorb ist leer.",
+        "orderSuccess": "Bestellung erhalten! 🚀",
+        "orderSuccessMsg": "An die Küche gesendet."
+    }
+}

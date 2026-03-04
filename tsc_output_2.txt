@@ -1,0 +1,10 @@
+.next/types/validator.ts(24,44): error TS2344: Type 'Route' does not satisfy the constraint 'LayoutRoutes'.
+  Type '"/"' is not assignable to type 'LayoutRoutes'.
+.next/types/validator.ts(24,75): error TS2344: Type 'Route' does not satisfy the constraint 'LayoutRoutes'.
+  Type '"/"' is not assignable to type 'LayoutRoutes'.
+.next/types/validator.ts(42,39): error TS2307: Cannot find module '../../app/page.js' or its corresponding type declarations.
+.next/types/validator.ts(57,39): error TS2307: Cannot find module '../../app/layout.js' or its corresponding type declarations.
+app/[locale]/admin/restaurants/[id]/feedback/page.tsx(3,36): error TS2307: Cannot find module '@/app/admin/actions' or its corresponding type declarations.
+app/[locale]/admin/restaurants/[id]/page.tsx(7,32): error TS2307: Cannot find module '@/app/admin/actions' or its corresponding type declarations.
+app/[locale]/admin/restaurants/[id]/tables/layout.tsx(17,40): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'Promise<{ id: string; }>'.
+app/[locale]/admin/restaurants/new/page.tsx(3,34): error TS2307: Cannot find module '@/app/admin/actions' or its corresponding type declarations.

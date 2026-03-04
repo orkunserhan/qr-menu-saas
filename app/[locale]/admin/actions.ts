@@ -191,10 +191,7 @@ export async function createProduct(restaurantId: string, categoryId: string, fo
         video_url,
         calories,
         preparation_time,
-        is_available: true,
-        // YENİ STOK ALANLARI
-        track_stock: formData.get('track_stock') === 'on',
-        stock_quantity: formData.get('stock_quantity') ? parseInt(formData.get('stock_quantity') as string) : null
+        is_available: true
     });
 
     if (error) return { error: 'Ürün eklenemedi: ' + error.message };

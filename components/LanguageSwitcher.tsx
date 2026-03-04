@@ -1,26 +1,31 @@
-
 'use client';
 
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/src/i18n/routing';
 import { ChangeEvent, useTransition } from 'react';
+import { useParams } from 'next/navigation';
 
 export default function LanguageSwitcher() {
     const router = useRouter();
     const pathname = usePathname();
+    const params = useParams();
     const locale = useLocale();
     const [isPending, startTransition] = useTransition();
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const nextLocale = e.target.value;
         startTransition(() => {
-            router.replace(pathname, { locale: nextLocale });
+            router.replace(
+                // @ts-expect-error -- useParams returns dynamic params that next-intl handles
+                { pathname, params },
+                { locale: nextLocale }
+            );
         });
     };
 
     return (
         <select
-            defaultValue={locale}
+            value={locale}
             onChange={handleChange}
             disabled={isPending}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-black focus:border-black block py-1.5 px-2"

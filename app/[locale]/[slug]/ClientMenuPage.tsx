@@ -180,6 +180,7 @@ export default function ClientMenuPage({
                     item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
                 );
             }
+
             return [...prev, { product, quantity: 1 }];
         });
     };

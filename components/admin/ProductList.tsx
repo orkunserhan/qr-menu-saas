@@ -9,21 +9,35 @@ import { ImageUploader } from './ImageUploader'
 export function ProductList({ categoryId, restaurantId, products }: { categoryId: string, restaurantId: string, products: any[] }) {
     const [isAdding, setIsAdding] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
     async function handleAdd(formData: FormData) {
         setLoading(true)
-        await createProduct(restaurantId, categoryId, formData)
+        setErrorMessage(null)
+        const res = await createProduct(restaurantId, categoryId, formData)
         setLoading(false)
-        setIsAdding(false)
+        if (res?.error) {
+            setErrorMessage(res.error)
+        } else {
+            setIsAdding(false)
+        }
     }
 
     async function handleDelete(id: string) {
         if (!confirm('Bu ürünü silmek istediğinize emin misiniz?')) return;
-        await deleteProduct(id, restaurantId);
+        try {
+            await deleteProduct(id, restaurantId);
+        } catch (err: any) {
+            alert('Silinemedi: ' + err.message);
+        }
     }
 
     async function handleToggleStock(id: string, currentStatus: boolean) {
-        await toggleProductAvailability(id, restaurantId, !currentStatus);
+        try {
+            await toggleProductAvailability(id, restaurantId, !currentStatus);
+        } catch (err: any) {
+            alert('Stok güncellenemedi: ' + err.message);
+        }
     }
 
     return (
@@ -111,6 +125,10 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                     </div>
 
                     <Input name="description" placeholder="Açıklama (İsteğe bağlı)" className="bg-white" />
+
+                    {errorMessage && (
+                        <div className="text-red-500 text-sm mt-2">{errorMessage}</div>
+                    )}
 
                     <div className="flex justify-end gap-2 mt-2">
                         <Button type="button" variant="ghost" size="sm" onClick={() => setIsAdding(false)}>İptal</Button>

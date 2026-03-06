@@ -27,11 +27,13 @@ create table if not exists public.feedbacks (
 alter table public.feedbacks enable row level security;
 
 -- Herkes yorum yazabilir
+drop policy if exists "Public can insert feedback" on public.feedbacks;
 create policy "Public can insert feedback" 
 on public.feedbacks for insert 
 with check (true);
 
 -- Sadece restoran sahibi kendi restoranına gelen yorumları görebilir
+drop policy if exists "Owners can view their restaurant feedbacks" on public.feedbacks;
 create policy "Owners can view their restaurant feedbacks" 
 on public.feedbacks for select 
 using (

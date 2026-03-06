@@ -109,6 +109,30 @@ export async function updateRestaurant(id: string, formData: FormData) {
         feedback_email: formData.get('feedback_email'),
     }
 
+    // Görselleri storage'a yükleme işlemleri
+    const logoFile = formData.get('logo') as File | null;
+    const coverImageFile = formData.get('cover_image') as File | null;
+
+    if (logoFile && logoFile.size > 0) {
+        const fileExt = logoFile.name.split('.').pop() || 'png';
+        const fileName = `brands/${id}-logo-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('menu-images').upload(fileName, logoFile);
+        if (!uploadError) {
+            const { data: { publicUrl } } = supabase.storage.from('menu-images').getPublicUrl(fileName);
+            updates.logo_url = publicUrl;
+        }
+    }
+
+    if (coverImageFile && coverImageFile.size > 0) {
+        const fileExt = coverImageFile.name.split('.').pop() || 'png';
+        const fileName = `brands/${id}-cover-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('menu-images').upload(fileName, coverImageFile);
+        if (!uploadError) {
+            const { data: { publicUrl } } = supabase.storage.from('menu-images').getPublicUrl(fileName);
+            updates.cover_image_url = publicUrl;
+        }
+    }
+
     // Kritik alanları SADECE Super Admin güncelleyebilir
     if (role === 'super_admin') {
         updates.is_active = formData.get('is_active') === 'on'

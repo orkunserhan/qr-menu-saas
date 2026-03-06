@@ -67,7 +67,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                         {product.name}
                                         {!product.is_available && <span className="text-xs text-red-500 font-bold">(Stok Yok)</span>}
                                     </div>
-                                    <div className="text-sm font-semibold text-gray-700">{product.price} ₺</div>
+                                    <div className="text-sm font-semibold text-gray-700">{product.price} €</div>
 
                                     {/* STOK BİLGİSİ KALDIRILDI: SADECE MEVCUT/MEVCUT DEĞİL */}
                                 </div>
@@ -107,7 +107,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                         <Input name="name" placeholder="Ürün Adı (Örn: Adana Kebap)" required autoFocus className="bg-white" />
 
                         <div className="grid grid-cols-2 gap-3">
-                            <Input name="price" type="number" step="0.01" placeholder="Fiyat (TL)" required className="bg-white" />
+                            <Input name="price" type="number" step="0.01" placeholder="Fiyat (€)" required className="bg-white" />
                             <Input name="calories" type="number" placeholder="Kalori (kcal)" className="bg-white" />
                         </div>
 

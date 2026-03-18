@@ -1,7 +1,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { toggleFeedbackRead } from "@/app/[locale]/admin/actions";
-import Link from "next/link";
+import { Link } from "@/src/i18n/routing";
 import { Button } from "@/components/ui/Button";
 
 export default async function FeedbackPage(props: { params: Promise<{ id: string }> }) {

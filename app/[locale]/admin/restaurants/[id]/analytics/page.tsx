@@ -1,6 +1,6 @@
 
 import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
+import { Link } from "@/src/i18n/routing";
 
 export const dynamic = 'force-dynamic';
 

@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { OrdersTracker } from "@/components/admin/OrdersTracker";
-import Link from "next/link";
+import { Link } from "@/src/i18n/routing";
 import { Button } from "@/components/ui/Button";
 
 interface PageProps {

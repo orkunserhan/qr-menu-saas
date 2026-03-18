@@ -10,17 +10,38 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
+.eye-comfort {
+  --background: #fbf0e1; /* Warm, sepia-like off-white */
+  --foreground: #4a3f35; /* Soft dark brown instead of harsh black */
+}
+
+/* Base styles tying into Tailwind */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optional standard CSS rules for forms inside the eye-comfort mode */
+.eye-comfort input,
+.eye-comfort select,
+.eye-comfort textarea,
+.eye-comfort div {
+  border-color: rgba(74, 63, 53, 0.2);
+}
+
+.eye-comfort button.bg-black {
+    background-color: #5c4e40;
+    color: #fbf0e1;
+}
+
+.eye-comfort .bg-white {
+    background-color: #fdf6ec; /* slightly lighter than background, but still warm */
 }

@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 export default function LoginPage() {
+    const t = useTranslations('auth');
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null);
 
@@ -36,10 +38,10 @@ export default function LoginPage() {
             <div className="w-full max-w-sm space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                 <div className="text-center">
                     <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-                        Panel'e Giriş Yap
+                        {t('title')}
                     </h2>
                     <p className="mt-2 text-sm text-gray-500">
-                        QR Menü sisteminizi yönetmek için giriş yapın.
+                        {t('desc')}
                     </p>
                 </div>
 
@@ -48,7 +50,7 @@ export default function LoginPage() {
                         id="email"
                         name="email"
                         type="email"
-                        label="E-posta"
+                        label={t('email')}
                         placeholder="ornek@sirket.com"
                         required
                     />
@@ -57,7 +59,7 @@ export default function LoginPage() {
                         id="password"
                         name="password"
                         type="password"
-                        label="Şifre"
+                        label={t('password')}
                         placeholder="••••••••"
                         required
                     />
@@ -69,7 +71,7 @@ export default function LoginPage() {
                     )}
 
                     <Button type="submit" fullWidth disabled={loading}>
-                        {loading ? "İşleniyor..." : "Giriş Yap"}
+                        {loading ? t('processing') : t('loginBtnText')}
                     </Button>
                 </form>
 
@@ -79,7 +81,7 @@ export default function LoginPage() {
                         href="/auth/forgot-password"
                         className="text-xs text-gray-500 hover:text-black underline transition-colors block"
                     >
-                        Şifremi unuttun mu?
+                        {t('forgotPasswordDesc')}
                     </Link>
 
                     {/* 

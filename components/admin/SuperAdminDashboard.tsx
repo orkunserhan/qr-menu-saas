@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 // Tip tanımları
 type RestaurantStat = {
@@ -23,6 +24,7 @@ type RestaurantStat = {
 export function SuperAdminDashboard({ user }: { user: any }) {
     const [stats, setStats] = useState<RestaurantStat[]>([]);
     const [loading, setLoading] = useState(true);
+    const t = useTranslations('superAdmin');
 
     useEffect(() => {
         async function fetchStats() {
@@ -58,19 +60,19 @@ export function SuperAdminDashboard({ user }: { user: any }) {
         <div className="space-y-8">
             {/* 1. Üst KPI Kartları */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <KpiCard title="Toplam Restoran" value={totalRestaurants} icon="🏪" color="bg-blue-50 text-blue-700" />
-                <KpiCard title="Toplam Ürün (Yük)" value={totalProducts} icon="🍔" color="bg-orange-50 text-orange-700" />
-                <KpiCard title="Aktif Lisanslar" value={activeSubscriptions} icon="✨" color="bg-purple-50 text-purple-700" />
-                <KpiCard title="Yaklaşan Yenilemeler" value={expiringSoon.length} icon="⚠️" color="bg-red-50 text-red-700" />
+                <KpiCard title={t('totalRestaurants')} value={totalRestaurants} icon="🏪" color="bg-blue-50 text-blue-700" />
+                <KpiCard title={t('totalProducts')} value={totalProducts} icon="🍔" color="bg-orange-50 text-orange-700" />
+                <KpiCard title={t('activeLicenses')} value={activeSubscriptions} icon="✨" color="bg-purple-50 text-purple-700" />
+                <KpiCard title={t('upcomingRenewals')} value={expiringSoon.length} icon="⚠️" color="bg-red-50 text-red-700" />
             </div>
 
             {/* 2. Kritik Uyarılar (Yenileme Zamanı) */}
             {expiringSoon.length > 0 && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-6">
                     <h3 className="font-bold text-red-800 flex items-center gap-2">
-                        <span>⏳ Lisans Süresi Bitiyor!</span>
+                        <span>{t('licenseExpiring')}</span>
                     </h3>
-                    <p className="text-sm text-red-600 mb-4">Aşağıdaki restoranların lisans süresi 30 günden az kaldı. İletişime geçip yenileme önerin.</p>
+                    <p className="text-sm text-red-600 mb-4">{t('licenseExpiringDesc')}</p>
                     <div className="grid gap-3">
                         {expiringSoon.map(r => (
                             <div key={r.id} className="bg-white p-3 rounded-lg border flex justify-between items-center shadow-sm">
@@ -78,7 +80,7 @@ export function SuperAdminDashboard({ user }: { user: any }) {
                                     <div className="font-bold">{r.name}</div>
                                     <div className="text-xs text-gray-500">{r.owner_email} | {new Date(r.subscription_end_date!).toLocaleDateString()}</div>
                                 </div>
-                                <Button size="sm" variant="outline">Mail At</Button>
+                                <Button size="sm" variant="outline">{t('sendMail')}</Button>
                             </div>
                         ))}
                     </div>
@@ -88,7 +90,7 @@ export function SuperAdminDashboard({ user }: { user: any }) {
             {/* 3. Yüksek Kullanım (High Usage) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 className="font-bold text-lg mb-4">🔥 En Yoğun Restoranlar (Ürün Bazlı)</h3>
+                    <h3 className="font-bold text-lg mb-4">{t('busiestRestaurants')}</h3>
                     <div className="space-y-4">
                         {highUsageRestaurants.map((r, i) => (
                             <div key={r.id} className="flex items-center justify-between border-b pb-2 last:border-0">
@@ -98,11 +100,11 @@ export function SuperAdminDashboard({ user }: { user: any }) {
                                     </span>
                                     <div>
                                         <div className="font-medium text-sm">{r.name}</div>
-                                        <div className="text-xs text-gray-400">{r.total_categories} Kategori</div>
+                                        <div className="text-xs text-gray-400">{r.total_categories} {t('category')}</div>
                                     </div>
                                 </div>
                                 <div className="font-mono font-bold text-sm text-gray-700">
-                                    {r.total_products} Ürün
+                                    {t('productCount', { count: r.total_products })}
                                 </div>
                             </div>
                         ))}
@@ -111,20 +113,20 @@ export function SuperAdminDashboard({ user }: { user: any }) {
 
                 {/* 4. Veri Kalitesi & Öneriler */}
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 className="font-bold text-lg mb-4">💡 Veri Kalitesi & Öneriler</h3>
+                    <h3 className="font-bold text-lg mb-4">{t('dataQuality')}</h3>
                     <div className="space-y-3">
                         {stats.filter(s => s.total_products < 5).map(r => (
                             <div key={r.id} className="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg text-sm text-yellow-800">
                                 <span className="text-xl">⚠️</span>
                                 <div>
-                                    <span className="font-bold">{r.name}</span> çok boş görünüyor ({r.total_products} ürün).
-                                    <div className="text-xs opacity-80 mt-1">Müşteriye ulaşıp menü girişine yardım etmeyi teklif edin.</div>
+                                    <span className="font-bold">{r.name}</span> {t('looksEmpty', { count: r.total_products })}
+                                    <div className="text-xs opacity-80 mt-1">{t('offerHelp')}</div>
                                 </div>
                             </div>
                         ))}
                         {stats.every(s => s.total_products >= 5) && (
                             <div className="text-green-600 flex items-center gap-2">
-                                <span>✅</span> Tüm restoranların veri girişi gayet iyi durumda!
+                                <span>✅</span> {t('allGood')}
                             </div>
                         )}
                     </div>
@@ -134,21 +136,21 @@ export function SuperAdminDashboard({ user }: { user: any }) {
             {/* Tüm Restoranlar Tablosu */}
             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                    <h3 className="font-bold text-lg">Tüm Restoranlar Listesi</h3>
+                    <h3 className="font-bold text-lg">{t('allRestaurantsList')}</h3>
                     <Link href="/admin/restaurants/new">
-                        <Button size="sm">+ Yeni Ekle</Button>
+                        <Button size="sm">{t('addNew')}</Button>
                     </Link>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-gray-50 text-gray-500 font-medium">
                             <tr>
-                                <th className="px-6 py-3">Restoran</th>
-                                <th className="px-6 py-3">Sahibi</th>
-                                <th className="px-6 py-3">Durum</th>
-                                <th className="px-6 py-3">Lisans</th>
-                                <th className="px-6 py-3">İstatistik</th>
-                                <th className="px-6 py-3 text-right">İşlem</th>
+                                <th className="px-6 py-3">{t('restaurant')}</th>
+                                <th className="px-6 py-3">{t('owner')}</th>
+                                <th className="px-6 py-3">{t('status')}</th>
+                                <th className="px-6 py-3">{t('license')}</th>
+                                <th className="px-6 py-3">{t('statistics')}</th>
+                                <th className="px-6 py-3 text-right">{t('action')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -161,27 +163,27 @@ export function SuperAdminDashboard({ user }: { user: any }) {
                                     <td className="px-6 py-4 text-gray-600">{r.owner_email || '-'}</td>
                                     <td className="px-6 py-4">
                                         {r.is_active ? (
-                                            <span className="inline-flex px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Aktif</span>
+                                            <span className="inline-flex px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">{t('active')}</span>
                                         ) : (
-                                            <span className="inline-flex px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">Pasif</span>
+                                            <span className="inline-flex px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">{t('inactive')}</span>
                                         )}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="text-xs">
-                                            {r.subscription_plan === 'free' ? 'Ücretsiz' : r.subscription_plan}
+                                            {r.subscription_plan === 'free' ? t('free') : r.subscription_plan}
                                         </div>
                                         {r.subscription_end_date && (
                                             <div className="text-xs text-gray-400">
-                                                Bit: {new Date(r.subscription_end_date).toLocaleDateString()}
+                                                {t('expires')}: {new Date(r.subscription_end_date).toLocaleDateString()}
                                             </div>
                                         )}
                                     </td>
                                     <td className="px-6 py-4 text-gray-500">
-                                        {r.total_products} Ürün / {r.total_feedback} Yorum
+                                        {t('productCount', { count: r.total_products })} / {t('reviews', { count: r.total_feedback })}
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <Link href={`/admin/restaurants/${r.id}`}>
-                                            <Button variant="ghost" size="sm">Yönet →</Button>
+                                            <Button variant="ghost" size="sm">{t('manage')}</Button>
                                         </Link>
                                     </td>
                                 </tr>

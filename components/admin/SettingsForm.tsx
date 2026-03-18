@@ -1,59 +1,104 @@
 'use client'
 
-import { updateRestaurant } from "@/app/[locale]/admin/actions";
+import {
+    updateRestaurantDailyStatus,
+    updateRestaurantBrand,
+    updateRestaurantCorporate,
+    updateRestaurantCampaign,
+    updateRestaurantMenuAppearance,
+    updateRestaurantSystem
+} from "@/app/[locale]/admin/actions";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { ImageUploader } from "./ImageUploader";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export function SettingsForm({ restaurant, role }: { restaurant: any, role: string | null }) {
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState<string | null>(null);
+    const t = useTranslations('components');
+    const [loadingSection, setLoadingSection] = useState<string | null>(null);
+    const [messages, setMessages] = useState<Record<string, { type: 'success' | 'error', text: string }>>({});
 
-    // Tarihi formatla
     const defaultDate = restaurant.subscription_end_date
         ? new Date(restaurant.subscription_end_date).toISOString().slice(0, 16)
         : '';
 
     const isAdmin = role === 'super_admin';
 
-    const handleUpdate = async (formData: FormData) => {
-        setLoading(true);
-        setMessage(null);
+    const handleUpdate = async (section: string, actionFn: (id: string, formData: FormData) => Promise<any>, formData: FormData) => {
+        setLoadingSection(section);
 
-        // Slug formatlama
-        const slug = formData.get('slug') as string;
-        if (slug) {
-            formData.set('slug', slug.toLowerCase().replace(/ /g, '-').replace(/[^\w-]/g, ''));
+        // Önceki mesajı temizle
+        const newMessages = { ...messages };
+        delete newMessages[section];
+        setMessages(newMessages);
+
+        // Slug formatlama (sadece brand formunda var)
+        if (section === 'brand') {
+            const slug = formData.get('slug') as string;
+            if (slug) {
+                formData.set('slug', slug.toLowerCase().replace(/ /g, '-').replace(/[^\w-]/g, ''));
+            }
         }
 
         try {
-            const res = await updateRestaurant(restaurant.id, formData);
+            const res = await actionFn(restaurant.id, formData);
             if (res?.error) {
-                setMessage(res.error);
+                setMessages(prev => ({ ...prev, [section]: { type: 'error', text: res.error } }));
             } else {
-                setMessage("Ayarlar başarıyla güncellendi. ✅");
+                setMessages(prev => ({ ...prev, [section]: { type: 'success', text: "Ayarlar başarıyla güncellendi." } }));
             }
         } catch (error) {
-            setMessage("Bir hata oluştu.");
+            setMessages(prev => ({ ...prev, [section]: { type: 'error', text: "Beklenmeyen bir hata oluştu." } }));
         } finally {
-            setLoading(false);
+            setLoadingSection(null);
         }
     };
 
-    return (
-        <form action={handleUpdate} className="space-y-6 max-w-xl">
+    const StatusMessage = ({ section }: { section: string }) => {
+        const msg = messages[section];
+        if (!msg) return null;
+        return (
+            <div className={`mt-4 p-3 rounded-lg text-sm text-center font-medium ${msg.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {msg.text}
+            </div>
+        );
+    };
 
-            {/* Restoran Durumu (Herkes Görebilir - Günlük Operasyon) */}
-            <div className={`p-6 rounded-xl border shadow-sm space-y-4 ${restaurant.is_open ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-                <h3 className="text-sm font-semibold text-gray-900 border-b pb-2 border-gray-200/50">Restoran Günlük Durumu</h3>
+    const SaveButton = ({ section, label = "Kaydet" }: { section: string, label?: string }) => (
+        <div className="mt-6">
+            <Button type="submit" disabled={loadingSection === section} fullWidth>
+                {loadingSection === section ? "Kaydediliyor..." : label}
+            </Button>
+            <StatusMessage section={section} />
+        </div>
+    );
+
+    return (
+        <div className="space-y-6 max-w-xl relative">
+
+            <div className="flex justify-end mb-2">
+                <a
+                    href={`/${restaurant.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-black/10 bg-black text-white hover:bg-gray-800 h-10 px-4 text-sm gap-2 shadow-sm"
+                >
+                    Menünün Güncel Halini Gör
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+            </div>
+
+            {/* Restoran Durumu */}
+            <form action={(fd) => handleUpdate('daily', updateRestaurantDailyStatus, fd)} className={`p-6 rounded-xl border shadow-sm space-y-4 ${restaurant.is_open ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                <h3 className="text-sm font-semibold text-gray-900 border-b pb-2 border-gray-200/50">{t('dailyStatus')}</h3>
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
                         <span className="text-sm font-bold text-gray-800">
-                            {restaurant.is_open ? 'Şu an AÇIK ✅' : 'Şu an KAPALI ⛔'}
+                            {restaurant.is_open ? t('openNow') : t('closedNow')}
                         </span>
                         <span className="text-xs text-gray-500">
-                            {restaurant.is_open ? 'Müşteriler sipariş verebilir.' : 'Menüde "Kapalı" uyarısı görünür.'}
+                            {restaurant.is_open ? t('canOrder') : t('warnClosed')}
                         </span>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -61,14 +106,15 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                         <div className="w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-600"></div>
                     </label>
                 </div>
-            </div>
+                <SaveButton section="daily" label={t('saveStatus')} />
+            </form>
 
             {/* Marka & Görünüm */}
-            <div className="space-y-4 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <h3 className="font-bold text-gray-900 border-b pb-2 mb-4">Marka & Görünüm</h3>
+            <form action={(fd) => handleUpdate('brand', updateRestaurantBrand, fd)} className="space-y-4 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <h3 className="font-bold text-gray-900 border-b pb-2 mb-4">{t('brandAppearance')}</h3>
 
                 <Input
-                    label="Restoran Adı"
+                    label={t('restaurantName')}
                     name="name"
                     defaultValue={restaurant.name}
                     required
@@ -76,7 +122,7 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
 
                 <ImageUploader
                     name="logo"
-                    label="Restoran Logosu"
+                    label={t('restaurantLogo')}
                     existingImageUrl={restaurant.logo_url}
                     aspectRatioText="1:1 Kare"
                     maxWidth={800}
@@ -84,30 +130,30 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
 
                 <ImageUploader
                     name="cover_image"
-                    label="Kapak Fotoğrafı (Restoran Vitrini)"
+                    label={t('coverPhoto')}
                     existingImageUrl={restaurant.cover_image_url}
                     maxWidth={1600}
                     aspectRatioText="16:9 Sinematik"
                 />
 
                 <Input
-                    label="URL Kısa Adı (Slug)"
+                    label={t('urlSlug')}
                     name="slug"
                     defaultValue={restaurant.slug}
                     required
                 />
                 <Input
-                    label="Adres"
+                    label={t('address')}
                     name="address"
                     defaultValue={restaurant.address}
                 />
 
                 <div>
-                    <label className="text-sm font-medium text-gray-700 block mb-1">Para Birimi</label>
+                    <label className="text-sm font-medium text-gray-700 block mb-1">{t('currency')}</label>
                     <select
                         name="currency"
                         defaultValue={restaurant.currency || 'TRY'}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-black focus:border-black text-sm"
+                        className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-lg focus:ring-black focus:border-black text-sm shadow-sm"
                     >
                         <option value="TRY">₺ Türk Lirası</option>
                         <option value="EUR">€ Euro</option>
@@ -115,21 +161,22 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                         <option value="GBP">£ Sterlin</option>
                     </select>
                 </div>
-            </div>
+                <SaveButton section="brand" label={t('saveBrand')} />
+            </form>
 
             {/* İletişim & Entegrasyon */}
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-                <h3 className="text-sm font-semibold text-gray-900 border-b pb-2">Kurumsal & İletişim</h3>
+            <form action={(fd) => handleUpdate('corporate', updateRestaurantCorporate, fd)} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                <h3 className="text-sm font-semibold text-gray-900 border-b pb-2">{t('corpComm')}</h3>
 
                 <div className="grid grid-cols-2 gap-4">
                     <Input
-                        label="Yetkili Kişi"
+                        label={t('authPerson')}
                         name="owner_name"
                         placeholder="Ad Soyad"
                         defaultValue={restaurant.owner_name}
                     />
                     <Input
-                        label="Şirket Ünvanı"
+                        label={t('companyName')}
                         name="company_name"
                         placeholder="Örn: X Gıda Turizm Ltd. Şti."
                         defaultValue={restaurant.company_name}
@@ -192,16 +239,17 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                         placeholder="Link..."
                     />
                 </div>
-            </div>
+                <SaveButton section="corporate" label={t('saveComm')} />
+            </form>
 
-            {/* Günün Kampanyası / Duyuru (YENİ) */}
-            <div className={`p-6 rounded-xl border shadow-sm space-y-4 ${restaurant.is_campaign_active ? 'bg-purple-50 border-purple-200' : 'bg-white border-gray-200'}`}>
+            {/* Günün Kampanyası / Duyuru */}
+            <form action={(fd) => handleUpdate('campaign', updateRestaurantCampaign, fd)} className={`p-6 rounded-xl border shadow-sm space-y-4 ${restaurant.is_campaign_active ? 'bg-purple-50 border-purple-200' : 'bg-white border-gray-200'}`}>
                 <h3 className="text-sm font-semibold text-gray-900 border-b pb-2 flex items-center gap-2">
-                    <span>🎉</span> Günün Kampanyası / Duyuru
+                    {t('dailyCampaign')}
                 </h3>
 
                 <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm text-gray-700">Kampanyayı Aktif Et</span>
+                    <span className="text-sm text-gray-700">{t('campaignActive')}</span>
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" name="is_campaign_active" defaultChecked={restaurant.is_campaign_active} className="sr-only peer" />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:bg-purple-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
@@ -210,13 +258,13 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
 
                 <div className="space-y-3">
                     <Input
-                        label="Başlık (Örn: Mutlu Cuma!)"
+                        label={t('campaignTitleLabel')}
                         name="campaign_title"
                         defaultValue={restaurant.campaign_title}
                         placeholder="Kampanya başlığını yazın..."
                     />
                     <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">Kampanya Metni</label>
+                        <label className="text-sm font-medium text-gray-700 block mb-1">{t('campaignTextLabel')}</label>
                         <textarea
                             name="campaign_text"
                             rows={3}
@@ -226,38 +274,40 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                         />
                     </div>
                 </div>
-            </div>
+                <SaveButton section="campaign" label={t('saveCampaign')} />
+            </form>
 
             {/* Görünüm Ayarları */}
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-                <h3 className="text-sm font-semibold text-gray-900 border-b pb-2">Menü Görünümü</h3>
+            <form action={(fd) => handleUpdate('menu_appearance', updateRestaurantMenuAppearance, fd)} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                <h3 className="text-sm font-semibold text-gray-900 border-b pb-2">{t('menuAppearance')}</h3>
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-700">Kalori Bilgisi</span>
+                        <span className="text-sm text-gray-700">{t('caloriesInfo')}</span>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" name="show_calories" defaultChecked={restaurant.show_calories ?? true} className="sr-only peer" />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:bg-blue-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                         </label>
                     </div>
                     <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-700">Hazırlanma Süresi</span>
+                        <span className="text-sm text-gray-700">{t('prepTime')}</span>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" name="show_preparation_time" defaultChecked={restaurant.show_preparation_time ?? true} className="sr-only peer" />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:bg-blue-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                         </label>
                     </div>
                 </div>
-            </div>
+                <SaveButton section="menu_appearance" label={t('saveAppearance')} />
+            </form>
 
             {/* Sistem & Abonelik (SADECE SUPER ADMIN) */}
             {isAdmin && (
-                <div className="bg-orange-50 p-6 rounded-xl border border-orange-200 shadow-sm space-y-4">
+                <form action={(fd) => handleUpdate('system', updateRestaurantSystem, fd)} className="bg-orange-50 p-6 rounded-xl border border-orange-200 shadow-sm space-y-4">
                     <h3 className="text-sm font-bold text-orange-900 border-b border-orange-200 pb-2 flex items-center gap-2">
-                        🔒 Yönetici Paneli (Sadece Admin)
+                        {t('adminPanelHeader')}
                     </h3>
 
                     <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-700">Lisans Durumu (Aktif/Pasif)</span>
+                        <span className="text-sm font-medium text-gray-700">{t('licenseStatus')}</span>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" name="is_active" defaultChecked={restaurant.is_active} className="sr-only peer" />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:bg-orange-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
@@ -265,7 +315,7 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">Abonelik Bitiş Tarihi</label>
+                        <label className="text-sm font-medium text-gray-700 block mb-1">{t('subEndDate')}</label>
                         <input
                             type="datetime-local"
                             name="subscription_end_date"
@@ -275,11 +325,11 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                     </div>
 
                     <div className="pt-4 mt-4 border-t border-orange-200">
-                        <h4 className="font-bold text-orange-800 mb-2 flex items-center gap-2">💳 Ödeme Sistemi (Stripe)</h4>
+                        <h4 className="font-bold text-orange-800 mb-2 flex items-center gap-2">{t('paymentSystem')}</h4>
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex flex-col">
-                                <span className="text-sm font-medium text-gray-700">Online Ödeme</span>
-                                <span className="text-xs text-orange-600">Restoranın masada ödeme almasını sağlar.</span>
+                                <span className="text-sm font-medium text-gray-700">{t('onlinePayment')}</span>
+                                <span className="text-xs text-orange-600">{t('onlinePaymentDesc')}</span>
                             </div>
                             <label className="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" name="is_payment_enabled" defaultChecked={restaurant.is_payment_enabled} className="sr-only peer" />
@@ -299,18 +349,10 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                             <p className="text-[10px] text-gray-500 mt-1">Eğer boş bırakılırsa platform varsayılan hesabı kullanılır.</p>
                         </div>
                     </div>
-                </div>
+                    <SaveButton section="system" label={t('saveSystem')} />
+                </form>
             )}
 
-            <Button type="submit" disabled={loading} fullWidth>
-                {loading ? "Kaydediliyor..." : "Ayarları Kaydet"}
-            </Button>
-
-            {message && (
-                <div className={`p-4 rounded-lg text-sm text-center font-medium ${message.includes('başarıyla') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                    {message}
-                </div>
-            )}
-        </form>
+        </div>
     );
 }

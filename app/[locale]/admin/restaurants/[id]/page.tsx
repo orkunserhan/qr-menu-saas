@@ -6,6 +6,7 @@ import { AddCategoryForm } from "@/components/admin/AddCategoryForm";
 import { ProductList } from "@/components/admin/ProductList";
 import { deleteCategory } from "@/app/[locale]/admin/actions";
 import { QRCodeModal } from "@/components/admin/QRCodeModal";
+import { getTranslations } from "next-intl/server";
 
 interface PageProps {
     params: Promise<{
@@ -20,6 +21,8 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return redirect("/auth/login");
 
+    const t = await getTranslations('restAdmin');
+
     // Fetch Restaurant
     const { data: restaurant } = await supabase
         .from("restaurants")
@@ -27,7 +30,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
         .eq("id", id)
         .single();
 
-    if (!restaurant) return <div>Restoran bulunamadı.</div>
+    if (!restaurant) return <div>{t('not_found')}</div>
 
     // Fetch Categories with Products
     const { data: categories } = await supabase
@@ -39,40 +42,45 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             {/* Header */}
-            <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-                <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+                <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
                     <div className="flex items-center gap-4">
-                        <Link href="/admin" className="text-gray-400 hover:text-black transition-colors">←</Link>
+                        <Link href="/admin" className="text-gray-400 hover:text-black transition-colors rounded-full p-2 hover:bg-gray-100">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                        </Link>
                         <div>
-                            <h1 className="font-bold text-xl text-gray-900">{restaurant.name}</h1>
-                            <a href={`/${restaurant.slug}`} target="_blank" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
-                                {restaurant.slug} ↗
+                            <h1 className="font-extrabold text-2xl text-gray-900 tracking-tight">{restaurant.name}</h1>
+                            <a href={`/${restaurant.slug}`} target="_blank" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1 mt-0.5">
+                                qr.com/{restaurant.slug} <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                             </a>
                         </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap items-center gap-3">
                         <QRCodeModal slug={restaurant.slug} name={restaurant.name} />
 
                         <Link href={`/admin/restaurants/${id}/tables`}>
-                            <Button variant="outline" size="sm">Masa Düzeni</Button>
+                            <Button variant="outline" className="shadow-sm font-semibold border-gray-300">{t('tableLayout')}</Button>
                         </Link>
                         <Link href={`/admin/restaurants/${id}/reports`}>
-                            <Button variant="outline" size="sm">📊 Raporlar</Button>
+                            <Button variant="outline" className="shadow-sm font-semibold border-gray-300">{t('reports')}</Button>
                         </Link>
                         <Link href={`/admin/restaurants/${id}/orders`}>
-                            <Button variant="outline" size="sm" className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">🔔 Siparişler</Button>
+                            <Button className="bg-blue-600 text-white border border-blue-700 hover:bg-blue-700 hover:text-white shadow-lg font-extrabold text-lg px-6 py-6 animate-pulse">{t('orders')}</Button>
+                        </Link>
+                        <Link href={`/admin/restaurants/${id}/waiter-calls`}>
+                            <Button className="bg-red-600 text-white border border-red-700 hover:bg-red-700 hover:text-white shadow-lg font-extrabold text-lg px-6 py-6 animate-bounce">{t('waiter')}</Button>
                         </Link>
                         <Link href={`/admin/restaurants/${id}/analytics`}>
-                            <Button variant="outline" size="sm">📈 Analiz</Button>
+                            <Button variant="outline" className="shadow-sm font-semibold border-gray-300">{t('analytics')}</Button>
                         </Link>
                         <Link href={`/admin/restaurants/${id}/feedback`}>
-                            <Button variant="outline" size="sm" className="bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100">💬 Yorumlar</Button>
+                            <Button variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200 hover:bg-yellow-100 shadow-sm font-bold">{t('comments')}</Button>
                         </Link>
                         <Link href={`/admin/restaurants/${id}/settings`}>
-                            <Button variant="outline" size="sm">Ayarlar</Button>
+                            <Button variant="outline" className="shadow-sm font-semibold border-gray-300 hover:bg-gray-50 text-gray-800">{t('settings')}</Button>
                         </Link>
                         <a href={`/${restaurant.slug}`} target="_blank">
-                            <Button size="sm">Menüyü Gör</Button>
+                            <Button className="shadow-md bg-gradient-to-r from-black to-gray-800 text-white font-bold tracking-wide">{t('viewMenu')}</Button>
                         </a>
                     </div>
                 </div>
@@ -83,7 +91,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
                 {/* Categories Section */}
                 <div>
                     <div className="flex justify-between items-end mb-4">
-                        <h2 className="text-lg font-bold text-gray-900">Menü & Kategoriler</h2>
+                        <h2 className="text-lg font-bold text-gray-900">{t('menuAndCategories')}</h2>
                     </div>
 
                     <AddCategoryForm restaurantId={id} />
@@ -97,7 +105,7 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
                                         'use server'
                                         await deleteCategory(category.id, id)
                                     }}>
-                                        <button className="text-xs text-red-500 hover:text-red-700 font-medium">Kategoriyi Sil</button>
+                                        <button className="text-xs text-red-500 hover:text-red-700 font-medium">{t('deleteCategory')}</button>
                                     </form>
                                 </div>
                                 <div className="p-4">
@@ -112,8 +120,8 @@ export default async function RestaurantDetailPage({ params }: PageProps) {
 
                         {(!categories || categories.length === 0) && (
                             <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-xl">
-                                <p className="text-lg font-medium text-gray-900">Menünüz Boş</p>
-                                <p className="text-sm text-gray-500 mt-1 mb-4">Müşterilerinizin sipariş verebilmesi için önce kategori ekleyin.</p>
+                                <p className="text-lg font-medium text-gray-900">{t('menuEmpty')}</p>
+                                <p className="text-sm text-gray-500 mt-1 mb-4">{t('addCategoryPrompt')}</p>
                                 {/* Ok işareti veya yönlendirme eklenebilir ama AddCategoryForm hemen üstte zaten */}
                             </div>
                         )}

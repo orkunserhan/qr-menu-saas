@@ -395,74 +395,105 @@ export default function ClientMenuPage({
                 )}
             </AnimatePresence>
 
-            {/* LANGUAGE SELECTOR */}
-            <div className="fixed top-4 right-4 z-40">
-                <div className="bg-black/80 backdrop-blur-md rounded-full p-1 pl-3 shadow-lg flex items-center gap-2">
-                    <span className="text-xs font-bold text-white uppercase">{initialLocale}</span>
-                    <div className="flex bg-white/10 rounded-full p-0.5">
-                        {(['tr', 'en', 'de', 'it', 'sk'] as LangCode[]).map((code) => (
-                            <button
-                                key={code}
-                                onClick={() => handleLanguageChange(code)}
-                                className={`w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center transition-all ${initialLocale === code ? 'bg-white text-black shadow-sm' : 'text-gray-300 hover:text-white'}`}
-                            >
-                                {code.toUpperCase()}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
             {/* HERO SECTION */}
-            <div className="relative h-64 md:h-80 lg:h-96 bg-gray-900 transition-all duration-500">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10"></div>
+            <div className="relative h-72 md:h-96 bg-gray-900 transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/20 z-10"></div>
+
+                {/* Arkaplan Görseli */}
                 <img
                     src={restaurant.cover_image_url || "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1600&q=80"}
-                    className="w-full h-full object-cover opacity-70"
+                    className="w-full h-full object-cover opacity-60 scale-105"
                     alt="Cover"
                 />
-                <div className="absolute bottom-6 left-6 right-6 z-20 text-white md:bottom-10 md:left-10">
-                    {/* Table Info */}
-                    {currentTable && (
-                        <div className="inline-flex items-center gap-2 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold mb-2 shadow-lg animate-pulse">
-                            <span>🪑 Masa Seçili ({currentTable})</span>
-                        </div>
-                    )}
 
-                    <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight shadow-sm mb-2">{restaurant.name}</h1>
-                    <div className="flex flex-wrap items-center gap-3 text-sm md:text-lg text-gray-200 opacity-90 mb-3">
-                        {restaurant.category && (
-                            <span className="bg-white/20 px-2 py-0.5 rounded text-xs md:text-sm backdrop-blur-sm">{restaurant.category}</span>
+                <div className="absolute bottom-6 left-6 right-6 z-20 text-white md:bottom-10 md:left-10 max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+
+                    <div className="flex-1 flex flex-col gap-3">
+                        {/* Masa Bilgisi */}
+                        {currentTable && (
+                            <div className="self-start inline-flex items-center gap-2 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse mb-1">
+                                <span>🪑 Masa Seçili ({currentTable})</span>
+                            </div>
                         )}
-                        <span className="flex items-center gap-1 line-clamp-1">📍 {restaurant.address || '...'}</span>
+
+                        <div className="flex items-start gap-4">
+                            {/* Restoran Logosu */}
+                            {restaurant.logo_url && (
+                                <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-xl shadow-2xl p-1 shrink-0 mt-1">
+                                    <img src={restaurant.logo_url} alt={`${restaurant.name} Logo`} className="w-full h-full object-contain rounded-lg" />
+                                </div>
+                            )}
+
+                            {/* Başlık ve Bilgiler */}
+                            <div className="flex flex-col flex-1 justify-center">
+                                <h1 className="text-2xl md:text-3xl lg:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-gray-400 drop-shadow-sm leading-tight pb-1">
+                                    {restaurant.name}
+                                </h1>
+
+                                <div className="flex flex-wrap items-center gap-2 mt-1">
+                                    {restaurant.category && (
+                                        <span className="bg-white/10 px-3 py-1 rounded-full backdrop-blur-md font-bold border border-white/20 text-[10px] md:text-xs text-white/90 uppercase tracking-widest shadow-sm">
+                                            {restaurant.category}
+                                        </span>
+                                    )}
+                                    <span className="flex items-center gap-1.5 text-xs md:text-sm text-gray-200 drop-shadow-md font-medium">
+                                        <svg className="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" /></svg>
+                                        {restaurant.address || 'Adres belirtilmemiş'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Sosyal Medya İkonları */}
+                        <div className="flex flex-wrap items-center gap-3 mt-3">
+                            {restaurant.social_instagram && (
+                                <a href={restaurant.social_instagram} target="_blank" rel="noopener noreferrer" className="bg-gradient-to-tr from-purple-600 to-orange-500 p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+                                    <svg className="w-4 h-4 md:w-5 md:h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z" /></svg>
+                                </a>
+                            )}
+                            {restaurant.social_facebook && (
+                                <a href={restaurant.social_facebook} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+                                    <svg className="w-4 h-4 md:w-5 md:h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036c-2.148 0-2.971 1.066-2.971 2.92v1.051h4.153l-.546 3.667h-3.607v7.98H9.101Z" /></svg>
+                                </a>
+                            )}
+                            {restaurant.social_twitter && (
+                                <a href={restaurant.social_twitter} target="_blank" rel="noopener noreferrer" className="bg-black p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+                                    <svg className="w-4 h-4 md:w-5 md:h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                                </a>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Social Media & Rate Buttons */}
-                    <div className="flex flex-wrap items-center gap-3 pt-2">
-                        {restaurant.social_instagram && (
-                            <a href={restaurant.social_instagram} target="_blank" rel="noopener noreferrer" className="bg-gradient-to-tr from-purple-600 to-orange-500 p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
-                                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z" /></svg>
-                            </a>
-                        )}
-                        {restaurant.social_facebook && (
-                            <a href={restaurant.social_facebook} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] p-2 rounded-full shadow-lg">
-                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036c-2.148 0-2.971 1.066-2.971 2.92v1.051h4.153l-.546 3.667h-3.607v7.98H9.101Z" /></svg>
-                            </a>
-                        )}
-                        {restaurant.social_twitter && (
-                            <a href={restaurant.social_twitter} target="_blank" rel="noopener noreferrer" className="bg-black p-2 rounded-full shadow-lg">
-                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                            </a>
-                        )}
+                    {/* Sağ Alt Aksiyonlar */}
+                    <div className="shrink-0 mt-6 md:mt-0 flex flex-row items-center justify-between w-full md:w-auto gap-4">
+                        {/* Dil Seçici (Dropdown) */}
+                        <div className="relative">
+                            <select
+                                value={initialLocale}
+                                onChange={(e) => handleLanguageChange(e.target.value as LangCode)}
+                                className="appearance-none bg-black/60 text-white backdrop-blur-md px-4 py-2.5 md:py-3 rounded-full text-sm font-semibold shadow-xl cursor-pointer pr-8 border border-white/10 outline-none hover:bg-black/80 transition-colors"
+                            >
+                                <option value="tr" className="text-black">Türkçe</option>
+                                <option value="en" className="text-black">English</option>
+                                <option value="de" className="text-black">Deutsch</option>
+                                <option value="it" className="text-black">Italiano</option>
+                                <option value="sk" className="text-black">Slovenčina</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
 
+                        {/* Değerlendir Butonu */}
                         <button
                             onClick={() => setShowFeedback(true)}
-                            className="ml-auto bg-white text-black px-4 py-2 rounded-full text-xs md:text-sm font-bold shadow-lg active:scale-95 transition-transform flex items-center gap-2 hover:bg-gray-100"
+                            className="bg-white text-black px-5 py-2.5 md:py-3 rounded-full text-sm font-bold shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-2 hover:bg-gray-100"
                         >
                             <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                             {t('rateUs')}
                         </button>
                     </div>
+
                 </div>
             </div>
 
@@ -583,38 +614,36 @@ export default function ClientMenuPage({
                 ))}
             </div>
 
-            {/* SEPET BAR (STICKY BOTTOM) */}
-            <AnimatePresence>
-                {cart.length > 0 && (
-                    <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gradient-to-t from-white via-white to-transparent pb-6">
-                        <motion.button
-                            initial={{ y: 50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: 50, opacity: 0 }}
-                            onClick={() => setShowCartModal(true)}
-                            className="w-full max-w-sm mx-auto bg-black text-white rounded-2xl p-4 shadow-xl flex items-center justify-between hover:scale-[1.02] transition-transform active:scale-95"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="bg-white/20 px-3 py-1 rounded-lg text-sm font-bold">{cartCount}</div>
-                                <span className="font-medium text-sm">{t('order')}</span>
-                            </div>
-                            <span className="font-bold text-lg">{cartTotal} {currencySymbol}</span>
-                        </motion.button>
-                    </div>
-                )}
-            </AnimatePresence>
-
             {/* BOTTOM NAV BAR */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-gray-200 px-6 py-2 pb-6 z-30 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]">
-                <div className="flex justify-between items-center max-w-sm mx-auto">
-                    <button onClick={() => window.scrollTo(0, 0)} className="flex flex-col items-center gap-1 text-black p-2">
+            <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-100 py-2 pb-6 z-40 shadow-[0_-8px_30px_-5px_rgba(0,0,0,0.08)]">
+                <div className="flex justify-between items-center max-w-md mx-auto relative px-4">
+                    {/* Menü Butonu */}
+                    <button onClick={() => window.scrollTo(0, 0)} className="flex flex-col items-center gap-1 text-black p-2 flex-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
                         <span className="text-[10px] font-bold">{t('menu')}</span>
                     </button>
 
+                    {/* Merkez Sepet Butonu */}
+                    <div className="flex-1 flex justify-center mt-[-24px]">
+                        <button
+                            onClick={() => setShowCartModal(true)}
+                            className={`relative flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 ${cartCount > 0 ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'}`}
+                        >
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            {cartCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-md animate-pulse">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </button>
+                    </div>
+
+                    {/* Garson Butonu */}
                     <button
                         onClick={() => setShowWaiterModal(true)}
-                        className="flex flex-col items-center gap-1 text-gray-400 hover:text-black transition-colors p-2"
+                        className="flex flex-col items-center gap-1 text-gray-500 hover:text-black transition-colors p-2 flex-1"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="22" x2="16" y1="11" y2="11" /></svg>
                         <span className="text-[10px] font-medium">{t('waiter')}</span>

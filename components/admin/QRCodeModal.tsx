@@ -3,8 +3,10 @@
 import React, { useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/Button';
+import { useTranslations } from 'next-intl';
 
 export function QRCodeValues({ slug, name }: { slug: string, name: string }) {
+    const t = useTranslations('components');
     const qrRef = useRef<SVGSVGElement>(null);
 
     // Tam URL (Deployment sonrası domain değişecek, şimdilik window.location veya sabit domain)
@@ -60,7 +62,7 @@ export function QRCodeValues({ slug, name }: { slug: string, name: string }) {
 
     return (
         <div className="flex flex-col items-center gap-4 p-6 bg-white rounded-xl border border-gray-200 text-center">
-            <h3 className="font-bold text-lg mb-2">QR Menü Kartı</h3>
+            <h3 className="font-bold text-lg mb-2">{t('qrCardTitle')}</h3>
 
             <div className="p-4 bg-white border-2 border-black rounded-xl shadow-lg">
                 <QRCodeSVG
@@ -77,7 +79,7 @@ export function QRCodeValues({ slug, name }: { slug: string, name: string }) {
             </div>
 
             <Button onClick={downloadQR} fullWidth className="mt-2">
-                QR Kodu İndir (PNG)
+                {t('qrDownloadBtn')}
             </Button>
             <p className="text-xs text-gray-400 mt-1">
                 Bunu yazdırıp masalarınıza yapıştırabilirsiniz.
@@ -90,13 +92,14 @@ export function QRCodeValues({ slug, name }: { slug: string, name: string }) {
 import { useState } from 'react';
 
 export function QRCodeModal({ slug, name }: { slug: string, name: string }) {
+    const t = useTranslations('components');
     const [isOpen, setIsOpen] = useState(false);
 
     if (!isOpen) {
         return (
             <Button variant="outline" size="sm" onClick={() => setIsOpen(true)} className="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M7 7h.01" /><path d="M7 17h.01" /><path d="M17 7h.01" /><path d="M17 17h.01" /></svg>
-                QR Kod
+                {t('qrCodeBtn')}
             </Button>
         )
     }

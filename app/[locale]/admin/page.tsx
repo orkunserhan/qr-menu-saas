@@ -8,6 +8,7 @@ import { getUserRole } from "@/utils/get-role";
 import { getTranslations } from 'next-intl/server';
 import { SuperAdminDashboard } from "@/components/admin/SuperAdminDashboard";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ export default async function AdminPage() {
     const role = await getUserRole();
     const t = await getTranslations('admin.dashboard');
     const tSettings = await getTranslations('admin.settings');
+    const tSuper = await getTranslations('superAdmin');
 
     const {
         data: { user },
@@ -30,12 +32,14 @@ export default async function AdminPage() {
             <div className="min-h-screen bg-gray-50 font-sans">
                 <nav className="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center sticky top-0 z-10">
                     <div className="flex flex-col">
-                        <div className="font-bold text-xl tracking-tight">QR Menu Panel</div>
+                        <div className="font-bold text-xl tracking-tight">{tSuper('panelTitle')}</div>
                         <div className="text-xs text-green-600 font-bold mt-1">
-                            ⚡ SUPER ADMIN MODU
+                            {tSuper('mode')}
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
+                        <ThemeSwitcher />
+                        <LanguageSwitcher />
                         <form action={signout}>
                             <Button type="submit" variant="ghost" size="sm">{tSettings('logout')}</Button>
                         </form>
@@ -44,8 +48,8 @@ export default async function AdminPage() {
 
                 <main className="p-8 max-w-7xl mx-auto">
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Sistem Genel Bakış</h1>
-                        <p className="text-gray-500 mt-2">Platform genelindeki tüm metrikleri ve performansı buradan izleyebilirsiniz.</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">{tSuper('overview')}</h1>
+                        <p className="text-gray-500 mt-2">{tSuper('overviewDesc')}</p>
                     </div>
 
                     <SuperAdminDashboard user={user} />
@@ -72,6 +76,7 @@ export default async function AdminPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
+                    <ThemeSwitcher />
                     <LanguageSwitcher />
                     <form action={signout}>
                         <Button type="submit" variant="ghost" size="sm">{tSettings('logout')}</Button>
@@ -89,8 +94,8 @@ export default async function AdminPage() {
                             return (
                                 <div className="mb-8 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white p-6 rounded-2xl shadow-xl flex items-center justify-between animate-bounce">
                                     <div>
-                                        <h2 className="text-2xl font-bold">🎂 İyi ki Doğdun, {user.email?.split('@')[0]}! 🎉</h2>
-                                        <p className="opacity-90 mt-1">Stil Koçum ailesi olarak yeni yaşının sana şans ve başarı getirmesini dileriz.</p>
+                                        <h2 className="text-2xl font-bold">🎂 {t('happyBirthday', { name: user.email?.split('@')[0] || '' })} 🎉</h2>
+                                        <p className="opacity-90 mt-1">{t('birthdayWish')}</p>
                                     </div>
                                     <div className="text-4xl">🎁</div>
                                 </div>

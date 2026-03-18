@@ -47,10 +47,12 @@ export async function createOrder(
 ): Promise<CreateOrderResult> {
     const supabase = await createClient()
 
-    // 1. Validate Input
+    // 1. Validate Input (Boş stringleri null'a çevir)
+    const normalizedTableId = tableId && tableId.trim() !== '' ? tableId : null;
+
     const validation = CreateOrderSchema.safeParse({
         restaurantId,
-        tableId,
+        tableId: normalizedTableId,
         totalAmount,
         items,
         customerNote: note
@@ -105,7 +107,8 @@ export async function createOrder(
         if (orderError) {
             console.error('Order Insert Error:', orderError);
             await logSystem('Sipariş DB Hatası', 'error', restaurantId, { error: orderError });
-            return { success: false, error: 'Sipariş kaydedilemedi.', code: "DB_INSERT_ERROR" }
+            // Hata mesajını detaylı göstererek neyin eksik olduğunu frontend'de görelim
+            return { success: false, error: 'Sipariş oluşturulamadı: ' + orderError.message, code: "DB_INSERT_ERROR" }
         }
 
         // 3. Insert Order Items

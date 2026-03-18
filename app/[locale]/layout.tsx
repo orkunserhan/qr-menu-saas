@@ -1,9 +1,9 @@
-
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/src/i18n/routing';
 import ToasterProvider from '@/components/ToasterProvider';
+import { ThemeProvider } from '@/components/ThemeProvider';
 import "../globals.css";
 
 export const metadata = {
@@ -27,12 +27,14 @@ export default async function LocaleLayout({
     const messages = await getMessages();
 
     return (
-        <html lang={locale}>
-            <body className="antialiased">
-                <NextIntlClientProvider messages={messages}>
-                    <ToasterProvider />
-                    {children}
-                </NextIntlClientProvider>
+        <html lang={locale} suppressHydrationWarning>
+            <body className="antialiased dark:bg-gray-900 transition-colors duration-300">
+                <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                    <NextIntlClientProvider messages={messages}>
+                        <ToasterProvider />
+                        {children}
+                    </NextIntlClientProvider>
+                </ThemeProvider>
             </body>
         </html>
     );

@@ -53,113 +53,141 @@ export async function createRestaurant(formData: FormData) {
     redirect('/admin')
 }
 
-// --- RESTORAN GÜNCELLEME (YETKİ KONTROLLÜ) ---
-export async function updateRestaurant(id: string, formData: FormData) {
+// --- RESTORAN GÜNCELLEME (BÖLÜNMÜŞ FORMLAR İÇİN) ---
+
+async function uploadImageIfPresent(supabase: any, formData: FormData, fieldName: string, id: string, prefix: string) {
+    const file = formData.get(fieldName) as File | null;
+    if (file && file.size > 0) {
+        const fileExt = file.name.split('.').pop() || 'png';
+        const fileName = `brands/${id}-${prefix}-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('menu-images').upload(fileName, file);
+        if (!uploadError) {
+            const { data: { publicUrl } } = supabase.storage.from('menu-images').getPublicUrl(fileName);
+            return publicUrl;
+        } else {
+            console.error(`Upload error for ${fieldName}:`, uploadError);
+            throw new Error(`Görsel (${fieldName}) yüklenemedi: ${uploadError.message}`);
+        }
+    }
+    return null;
+}
+
+export async function updateRestaurantDailyStatus(id: string, formData: FormData) {
     const supabase = await createClient()
-    const role = await getUserRole() // Yetkiyi kontrol et
-
-    const name = formData.get('name') as string
-    const slug = formData.get('slug') as string
-    const address = formData.get('address') as string
-    const wifi_pass = formData.get('wifi_pass') as string
-    const phone = formData.get('phone') as string
-    const email = formData.get('email') as string
-    const category = formData.get('category') as string
-    const google_place_id = formData.get('google_place_id') as string
-    const social_instagram = formData.get('social_instagram') as string
-    const social_twitter = formData.get('social_twitter') as string
-    const social_facebook = formData.get('social_facebook') as string
-
-    const show_calories = formData.get('show_calories') === 'on'
-    const show_preparation_time = formData.get('show_preparation_time') === 'on'
-
-    // Günlük Açık/Kapalı Durumu (Hem Admin Hem Owner değiştirebilir)
     const is_open = formData.get('is_open') === 'on'
-
-    // Kampanya Ayarları
-    const campaign_title = formData.get('campaign_title') as string
-    const campaign_text = formData.get('campaign_text') as string
-    const is_campaign_active = formData.get('is_campaign_active') === 'on'
-    const currency = formData.get('currency') as string
-
-    const updates: any = {
-        name,
-        slug,
-        address,
-        wifi_pass,
-        phone,
-        email,
-        category,
-        google_place_id,
-        google_review_url: formData.get('google_review_url') as string,
-        social_instagram,
-        social_twitter,
-        social_facebook,
-        show_calories,
-        show_preparation_time,
-        is_open,
-        campaign_title,
-        campaign_text,
-        is_campaign_active,
-        currency,
-
-        // YENİ ALANLAR (Kurumsal)
-        owner_name: formData.get('owner_name'),
-        company_name: formData.get('company_name'),
-        feedback_email: formData.get('feedback_email'),
-    }
-
-    // Görselleri storage'a yükleme işlemleri
-    const logoFile = formData.get('logo') as File | null;
-    const coverImageFile = formData.get('cover_image') as File | null;
-
-    if (logoFile && logoFile.size > 0) {
-        const fileExt = logoFile.name.split('.').pop() || 'png';
-        const fileName = `brands/${id}-logo-${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage.from('menu-images').upload(fileName, logoFile);
-        if (!uploadError) {
-            const { data: { publicUrl } } = supabase.storage.from('menu-images').getPublicUrl(fileName);
-            updates.logo_url = publicUrl;
-        }
-    }
-
-    if (coverImageFile && coverImageFile.size > 0) {
-        const fileExt = coverImageFile.name.split('.').pop() || 'png';
-        const fileName = `brands/${id}-cover-${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage.from('menu-images').upload(fileName, coverImageFile);
-        if (!uploadError) {
-            const { data: { publicUrl } } = supabase.storage.from('menu-images').getPublicUrl(fileName);
-            updates.cover_image_url = publicUrl;
-        }
-    }
-
-    // Kritik alanları SADECE Super Admin güncelleyebilir
-    if (role === 'super_admin') {
-        updates.is_active = formData.get('is_active') === 'on'
-        updates.subscription_end_date = formData.get('subscription_end_date') as string
-        updates.is_payment_enabled = formData.get('is_payment_enabled') === 'on'
-        // Opsiyonel: Admin panelinden manuel stripe ID girme
-        if (formData.get('stripe_account_id')) {
-            updates.stripe_account_id = formData.get('stripe_account_id') as string
-        }
-    }
-
-    const { error } = await supabase
-        .from('restaurants')
-        .update(updates)
-        .eq('id', id)
-
-    if (error) {
-        if (error.code === '23505') {
-            return { error: 'Bu URL uzantısı (slug) zaten kullanılıyor.' }
-        }
-        return { error: 'Güncelleme hatası: ' + error.message }
-    }
-
+    const { error } = await supabase.from('restaurants').update({ is_open }).eq('id', id)
+    if (error) return { error: 'Güncelleme hatası: ' + error.message }
     revalidatePath(`/admin/restaurants/${id}`)
     revalidatePath(`/admin/restaurants/${id}/settings`)
-    revalidatePath(`/${slug}`)
+    return { success: true }
+}
 
+export async function updateRestaurantBrand(id: string, formData: FormData) {
+    const supabase = await createClient()
+
+    // Slug formatlama
+    let slug = formData.get('slug') as string;
+    if (slug) {
+        slug = slug.toLowerCase().replace(/ /g, '-').replace(/[^\w-]/g, '');
+    }
+
+    const updates: any = {
+        name: formData.get('name') as string,
+        slug: slug,
+        address: formData.get('address') as string,
+        currency: formData.get('currency') as string,
+    }
+
+    try {
+        const logoUrl = await uploadImageIfPresent(supabase, formData, 'logo', id, 'logo');
+        if (logoUrl) updates.logo_url = logoUrl;
+
+        const coverUrl = await uploadImageIfPresent(supabase, formData, 'cover_image', id, 'cover');
+        if (coverUrl) updates.cover_image_url = coverUrl;
+    } catch (e: any) {
+        return { error: `${e.message} Lütfen boyutların ve uzantının uygun olduğundan emin olun (Örn: 800x800 px, max 2MB).` }
+    }
+
+    const { error } = await supabase.from('restaurants').update(updates).eq('id', id)
+    if (error) {
+        if (error.code === '23505') return { error: 'Bu URL uzantısı (slug) zaten kullanılıyor.' }
+        return { error: 'Güncelleme hatası: ' + error.message }
+    }
+    revalidatePath(`/admin/restaurants/${id}`)
+    revalidatePath(`/admin/restaurants/${id}/settings`)
+    if (updates.slug) revalidatePath(`/${updates.slug}`)
+    return { success: true }
+}
+
+export async function updateRestaurantCorporate(id: string, formData: FormData) {
+    const supabase = await createClient()
+    const updates = {
+        owner_name: formData.get('owner_name') as string,
+        company_name: formData.get('company_name') as string,
+        feedback_email: formData.get('feedback_email') as string,
+        phone: formData.get('phone') as string,
+        email: formData.get('email') as string,
+        google_place_id: formData.get('google_place_id') as string,
+        google_review_url: formData.get('google_review_url') as string,
+        social_instagram: formData.get('social_instagram') as string,
+        social_facebook: formData.get('social_facebook') as string,
+        social_twitter: formData.get('social_twitter') as string,
+    }
+    const { error } = await supabase.from('restaurants').update(updates).eq('id', id)
+    if (error) return { error: 'Güncelleme hatası: ' + error.message }
+    revalidatePath(`/admin/restaurants/${id}`)
+    revalidatePath(`/admin/restaurants/${id}/settings`)
+    return { success: true }
+}
+
+export async function updateRestaurantCampaign(id: string, formData: FormData) {
+    const supabase = await createClient()
+    const updates = {
+        is_campaign_active: formData.get('is_campaign_active') === 'on',
+        campaign_title: formData.get('campaign_title') as string,
+        campaign_text: formData.get('campaign_text') as string,
+    }
+    const { error } = await supabase.from('restaurants').update(updates).eq('id', id)
+    if (error) return { error: 'Güncelleme hatası: ' + error.message }
+    revalidatePath(`/admin/restaurants/${id}`)
+    revalidatePath(`/admin/restaurants/${id}/settings`)
+    return { success: true }
+}
+
+export async function updateRestaurantMenuAppearance(id: string, formData: FormData) {
+    const supabase = await createClient()
+    const updates = {
+        show_calories: formData.get('show_calories') === 'on',
+        show_preparation_time: formData.get('show_preparation_time') === 'on',
+    }
+    const { error } = await supabase.from('restaurants').update(updates).eq('id', id)
+    if (error) return { error: 'Güncelleme hatası: ' + error.message }
+    revalidatePath(`/admin/restaurants/${id}`)
+    revalidatePath(`/admin/restaurants/${id}/settings`)
+    return { success: true }
+}
+
+export async function updateRestaurantSystem(id: string, formData: FormData) {
+    const supabase = await createClient()
+    const role = await getUserRole()
+    if (role !== 'super_admin') return { error: 'Yetkisiz işlem.' }
+
+    const updates: any = {
+        is_active: formData.get('is_active') === 'on',
+        subscription_end_date: formData.get('subscription_end_date') as string,
+        is_payment_enabled: formData.get('is_payment_enabled') === 'on',
+    }
+
+    // Eğer stripe_account_id gelmişse veya boşaltılmışsa güncelle (undefined değilse)
+    const stripeId = formData.get('stripe_account_id');
+    if (stripeId !== null) {
+        updates.stripe_account_id = stripeId as string;
+    }
+
+    const { error } = await supabase.from('restaurants').update(updates).eq('id', id)
+    if (error) return { error: 'Güncelleme hatası: ' + error.message }
+    revalidatePath(`/admin/restaurants/${id}`)
+    revalidatePath(`/admin/restaurants/${id}/settings`)
     return { success: true }
 }
 

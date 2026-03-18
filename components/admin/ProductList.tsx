@@ -5,8 +5,10 @@ import { createProduct, deleteProduct, toggleProductAvailability } from '@/app/[
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ImageUploader } from './ImageUploader'
+import { useTranslations } from 'next-intl'
 
 export function ProductList({ categoryId, restaurantId, products }: { categoryId: string, restaurantId: string, products: any[] }) {
+    const t = useTranslations('components');
     const [isAdding, setIsAdding] = useState(false)
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -55,7 +57,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                             )}
                             {!product.is_available && (
                                 <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                                    <span className="bg-red-500 text-white text-[10px] px-1 rounded font-bold">TÜKENDİ</span>
+                                    <span className="bg-red-500 text-white text-[10px] px-1 rounded font-bold">{t('outOfStock').replace('⛔ ', '')}</span>
                                 </div>
                             )}
                         </div>
@@ -65,7 +67,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                 <div>
                                     <div className="font-medium text-gray-900 truncate flex items-center gap-2">
                                         {product.name}
-                                        {!product.is_available && <span className="text-xs text-red-500 font-bold">(Stok Yok)</span>}
+                                        {!product.is_available && <span className="text-xs text-red-500 font-bold">({t('outOfStock')})</span>}
                                     </div>
                                     <div className="text-sm font-semibold text-gray-700">{product.price} €</div>
 
@@ -80,11 +82,11 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                             : 'border-red-200 text-red-700 bg-red-50 hover:bg-red-100'
                                             }`}
                                     >
-                                        {product.is_available ? '✅ Mevcut' : '⛔ Tükendi'}
+                                        {product.is_available ? t('available') : t('outOfStock')}
                                     </button>
 
                                     <button onClick={() => handleDelete(product.id)} className="text-xs text-red-500 hover:bg-red-50 p-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                        Sil
+                                        {t('delete')}
                                     </button>
                                 </div>
                             </div>
@@ -95,7 +97,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                     </div>
                 ))}
                 {products.length === 0 && !isAdding && (
-                    <div className="text-sm text-gray-400 italic py-2 text-center">Bu kategoride ürün yok.</div>
+                    <div className="text-sm text-gray-400 italic py-2 text-center">{t('productEmpty')}</div>
                 )}
             </div>
 
@@ -131,9 +133,9 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                     )}
 
                     <div className="flex justify-end gap-2 mt-2">
-                        <Button type="button" variant="ghost" size="sm" onClick={() => setIsAdding(false)}>İptal</Button>
+                        <Button type="button" variant="ghost" size="sm" onClick={() => setIsAdding(false)}>{t('cancel')}</Button>
                         <Button type="submit" size="sm" disabled={loading}>
-                            {loading ? "Kaydediliyor..." : "Kaydet"}
+                            {loading ? "..." : t('add')}
                         </Button>
                     </div>
                 </form>
@@ -142,7 +144,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                     onClick={() => setIsAdding(true)}
                     className="w-full py-2 text-sm text-gray-500 hover:text-black hover:bg-gray-50 rounded-lg border border-dashed border-gray-200 transition-colors"
                 >
-                    + Ürün Ekle
+                    {t('productAdd')}
                 </button>
             )}
         </div>

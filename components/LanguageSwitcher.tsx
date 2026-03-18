@@ -15,19 +15,7 @@ export default function LanguageSwitcher() {
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const nextLocale = e.target.value;
         startTransition(() => {
-            // next-intl usePathname() gives path without the locale prefix
-            // To ensure 100% robust navigation, we manually redirect and refresh
-            let newPath = pathname;
-            if (nextLocale !== 'tr') { // 'tr' is default layout without prefix
-                newPath = `/${nextLocale}${pathname === '/' ? '' : pathname}`;
-            }
-
-            // Keep params by restoring them to the URL
-            const searchParams = new URLSearchParams(window.location.search);
-            const query = searchParams.toString();
-            const fullUrl = query ? `${newPath}?${query}` : newPath;
-
-            window.location.href = fullUrl;
+            router.replace(pathname, { locale: nextLocale });
         });
     };
 

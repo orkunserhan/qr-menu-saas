@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { compressImage } from '@/utils/image-compression';
+import { useTranslations } from 'next-intl';
 
 interface ImageUploaderProps {
     name: string;
@@ -13,6 +14,7 @@ interface ImageUploaderProps {
 }
 
 export function ImageUploader({ name, label, existingImageUrl, onChange, maxWidth = 1000, aspectRatioText = "1:1 Kare" }: ImageUploaderProps) {
+    const t = useTranslations('components');
     const [preview, setPreview] = useState<string | null>(existingImageUrl || null);
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -84,8 +86,8 @@ export function ImageUploader({ name, label, existingImageUrl, onChange, maxWidt
                             hover:file:bg-gray-800 cursor-pointer"
                     />
                     <div className="text-[10px] text-gray-500 bg-blue-50 p-2 rounded-lg border border-blue-100">
-                        <strong className="block text-blue-700 mb-0.5">💡 İdeal Boyutlar (Global Standart)</strong>
-                        {aspectRatioText} formatında, ~<strong>{maxWidth}px</strong> genişliğinde yüklemeniz önerilir. Otomatik iyileştirme aktif.
+                        <strong className="block text-blue-700 mb-0.5">{t('idealDimensions')}</strong>
+                        {aspectRatioText === "1:1 Kare" ? t('squareFormatHint') : t('cinematicFormatHint')}
                     </div>
                 </div>
             </div>

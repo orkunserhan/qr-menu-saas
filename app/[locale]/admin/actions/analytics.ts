@@ -53,6 +53,5 @@ export async function archiveOldOrders(restaurantId: string) {
 }
 
 export async function sendMonthlyReportEmail(restaurantId: string) {
-    console.log(`[Enterprise CRM] Preparing monthly report for restaurant ${restaurantId}...`);
     return { success: true, message: "Report logic initialized. Deployment pending CRM credentials." };
 }

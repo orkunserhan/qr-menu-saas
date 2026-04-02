@@ -5,8 +5,6 @@ import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function HelpWidget() {
-    // Fixed roles to match translation keys exactly
-    const roles = ['Garson', 'Şef', 'Barista', 'Barmen', 'Komi', 'Müdür'];
     const t = useTranslations('restAdmin.help');
     const [isOpen, setIsOpen] = useState(false);
 

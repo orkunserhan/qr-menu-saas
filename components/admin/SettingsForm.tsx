@@ -162,7 +162,7 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                 <div>
                     <label className="text-sm font-medium text-gray-700 block mb-1">{t('currency')}</label>
                     <select name="currency" defaultValue={restaurant.currency || 'EUR'} className="w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-lg focus:ring-black focus:border-black text-sm shadow-sm">
-                        <option value="EUR">€ Euro</option><option value="TRY">₺ Türk Lirası</option><option value="USD">$ Dolar</option><option value="GBP">£ Sterlin</option>
+                        <option value="EUR">€ Euro</option><option value="TRY">₺ Turkish Lira</option><option value="USD">$ US Dollar</option><option value="GBP">£ British Pound</option>
                     </select>
                 </div>
                 <SaveButton section="brand" label={t('saveBrand')} />
@@ -176,7 +176,7 @@ export function SettingsForm({ restaurant, role }: { restaurant: any, role: stri
                 </div>
                 <Input label="Feedback & Notification Email" name="feedback_email" type="email" placeholder="feedback@restaurant.com" defaultValue={restaurant.feedback_email} />
                 <div className="grid grid-cols-2 gap-4 pt-2 border-t mt-2">
-                    <Input label="Telefon" name="phone" defaultValue={restaurant.phone} />
+                    <Input label="Phone" name="phone" defaultValue={restaurant.phone} />
                     <Input label="Email (General)" name="email" defaultValue={restaurant.email} />
                 </div>
                 <Input label="Google Maps Place ID" name="google_place_id" defaultValue={restaurant.google_place_id} placeholder="Ex: ChIJ..." />

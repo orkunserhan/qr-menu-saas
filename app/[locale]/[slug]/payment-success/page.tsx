@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { verifyPayment } from '@/app/actions/verify-payment';
 import { useRouter } from '@/src/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 export default function PaymentSuccessPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
     const searchParams = useSearchParams();
@@ -13,6 +14,7 @@ export default function PaymentSuccessPage({ params }: { params: Promise<{ local
     const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
     const router = useRouter();
     const [slug, setSlug] = useState<string>('');
+    const t = useTranslations('client');
 
     useEffect(() => {
         params.then(p => setSlug(p.slug));
@@ -26,18 +28,14 @@ export default function PaymentSuccessPage({ params }: { params: Promise<{ local
                 const result = await verifyPayment(sessionId, orderId);
                 if (result.success) {
                     setStatus('success');
-                    // Clear cart using restaurant ID
                     localStorage.removeItem(`cart_${restaurantId}`);
-                    // Redirect after delay
                     setTimeout(() => {
                         router.push(`/${slug}?payment_success=true`);
                     }, 3000);
                 } else {
-                    console.error("Payment verification failed:", result.error);
                     setStatus('error');
                 }
             } catch (err) {
-                console.error("Verification error:", err);
                 setStatus('error');
             }
         };
@@ -51,8 +49,8 @@ export default function PaymentSuccessPage({ params }: { params: Promise<{ local
                 {status === 'verifying' && (
                     <div className="animate-pulse space-y-4">
                         <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto"></div>
-                        <h2 className="text-xl font-bold text-gray-700">Ödemeniz Doğrulanıyor...</h2>
-                        <p className="text-sm text-gray-500">Güvenli ödeme işleminiz kontrol ediliyor.</p>
+                        <h2 className="text-xl font-bold text-gray-700">{t('paymentSuccessMsg').split('!')[0]}...</h2>
+                        <p className="text-sm text-gray-500">Verifying your secure payment...</p>
                     </div>
                 )}
 
@@ -62,11 +60,11 @@ export default function PaymentSuccessPage({ params }: { params: Promise<{ local
                             🎉
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-900">Ödeme Başarılı!</h2>
-                            <p className="text-gray-600 mt-2">Siparişiniz mutfağa iletildi.</p>
+                            <h2 className="text-2xl font-bold text-gray-900">{t('paymentSuccessMsg').split('.')[0]}!</h2>
+                            <p className="text-gray-600 mt-2">{t('orderSuccessMsg')}</p>
                         </div>
                         <div className="pt-4 border-t border-gray-100">
-                            <p className="text-xs text-gray-400">Menüye yönlendiriliyorsunuz...</p>
+                            <p className="text-xs text-gray-400">Redirecting to menu...</p>
                         </div>
                     </div>
                 )}
@@ -76,13 +74,13 @@ export default function PaymentSuccessPage({ params }: { params: Promise<{ local
                         <div className="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-sm">
                             ⚠️
                         </div>
-                        <h2 className="text-xl font-bold text-red-700">Bir Sorun Oluştu</h2>
-                        <p className="text-gray-600 text-sm">Ödemeniz doğrulanırken beklenmedik bir hata oluştu. Lütfen garsona bilgi veriniz.</p>
+                        <h2 className="text-xl font-bold text-red-700">An Error Occurred</h2>
+                        <p className="text-gray-600 text-sm">Your payment could not be verified. Please inform the waiter.</p>
                         <button
                             onClick={() => router.push(`/${slug}`)}
                             className="w-full bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors shadow-lg"
                         >
-                            Menüye Dön
+                            Return to Menu
                         </button>
                     </div>
                 )}

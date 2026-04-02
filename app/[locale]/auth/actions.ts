@@ -80,7 +80,7 @@ export async function signupWithRestaurant(formData: FormData) {
     }
 
     if (!authData.user) {
-        return { error: "Kullanıcı oluşturulamadı." }
+        return { error: "Could not create user." }
     }
 
     // B. Profili Güncelle (Profil tablosu trigger ile oluşmuş olabilir veya biz oluştururuz)
@@ -113,7 +113,7 @@ export async function signupWithRestaurant(formData: FormData) {
 
     if (restError) {
         console.error('Restaurant Error:', restError)
-        return { error: "Hesap oluşturuldu ama restoran kaydedilemedi: " + restError.message }
+        return { error: "Account created but restaurant could not be saved: " + restError.message }
     }
 
     revalidatePath('/', 'layout')
@@ -130,7 +130,7 @@ export async function resetPassword(formData: FormData) {
     const supabase = await createClient()
     const email = formData.get('email') as string
 
-    if (!email) return { error: "E-posta gereklidir." }
+    if (!email) return { error: "Email is required." }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/update-password`,

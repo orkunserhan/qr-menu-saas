@@ -68,7 +68,7 @@ function DraggableTable({ table, onDelete, onShowQR }: { table: any, onDelete: (
                 <button
                     onClick={(e) => {
                         e.stopPropagation(); // Sürüklemeyi engelle
-                        if (confirm('Masayı silmek istediğine emin misin?')) onDelete(table.id);
+                        if (confirm('Are you sure you want to delete this table?')) onDelete(table.id);
                     }}
                     className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:scale-110"
                     onPointerDown={(e) => e.stopPropagation()}
@@ -203,7 +203,7 @@ export function TableEditor({ restaurantId, restaurantSlug, initialTables }: { r
             </div>
 
             <div className="text-center text-xs text-gray-500">
-                Masaları tutup sürükleyerek restoranınızın krokisine göre yerleştirebilirsiniz. Masanın üzerine gelince çıkan "QR" butonu ile masaya özel QR alabilirsiniz.
+                Drag tables to arrange them according to your restaurant layout. Hover over a table to reveal the "QR" button.
             </div>
 
             {/* QR Gösterim Modal */}
@@ -225,7 +225,7 @@ export function TableEditor({ restaurantId, restaurantSlug, initialTables }: { r
                                 target="_blank"
                                 className="block w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-all text-sm"
                             >
-                                ✨ Menüyü Aç & Test Et
+                                ✨ Open Menu & Test
                             </a>
                         </div>
                     </div>

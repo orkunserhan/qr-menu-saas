@@ -3,7 +3,6 @@
 import { createClient } from "@/utils/supabase/server";
 
 export async function requestWaiter(restaurantId: string, tableId: string | null, type: string) {
-    console.log("requestWaiter called with:", { restaurantId, tableId, type });
     try {
         const supabase = await createClient();
 
@@ -16,13 +15,13 @@ export async function requestWaiter(restaurantId: string, tableId: string | null
 
         if (error) {
             console.error("Waiter Call DB Error:", error);
-            return { success: false, error: 'İstek gönderilemedi. (DB)' };
+            return { success: false, error: 'Could not send request. (DB)' };
         }
 
         return { success: true };
     } catch (e: any) {
         console.error("Waiter Call Uncaught Exception:", e);
-        return { success: false, error: e.message || 'Sunucu hatası.' };
+        return { success: false, error: e.message || 'Server error.' };
     }
 }
 

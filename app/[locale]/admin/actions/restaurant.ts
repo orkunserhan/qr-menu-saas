@@ -35,8 +35,7 @@ async function uploadImageIfPresent(supabase: any, formData: FormData, fieldName
             const { data: { publicUrl } } = supabase.storage.from('menu-images').getPublicUrl(fileName);
             return publicUrl;
         } else {
-            console.error(`Upload error for ${fieldName}:`, uploadError);
-            throw new Error(`Görsel (${fieldName}) yüklenemedi: ${uploadError.message}`);
+            throw new Error(`Image upload failed for ${fieldName}: ${uploadError.message}`);
         }
     }
     return null;
@@ -45,7 +44,7 @@ async function uploadImageIfPresent(supabase: any, formData: FormData, fieldName
 export async function createRestaurant(formData: FormData) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return { error: 'Oturum açmanız gerekiyor.' };
+    if (!user) return { error: 'You need to be logged in.' };
 
     const name = formData.get('name') as string
     const slug = formData.get('slug') as string
@@ -77,12 +76,12 @@ export async function createRestaurant(formData: FormData) {
         }).select('id').single();
 
     if (error) {
-        if (error.code === '23505') return { error: 'Bu URL uzantısı (slug) zaten alınmış.' }
-        return { error: 'Hata: ' + error.message }
+        if (error.code === '23505') return { error: 'This URL slug is already taken.' }
+        return { error: 'Error: ' + error.message }
     }
 
-    // POST-CREATION HOOK: Yeni Restoran açıldığında null pointer hatası almamak ve
-    // Order/Table API'lerinin kusursuz çalışması için 5 Adet Default Masa ekle.
+    // POST-CREATION HOOK: Add 5 default tables to prevent null pointer errors
+    // and ensure Order/Table APIs work correctly on first open.
     if (newRest?.id) {
         const defaultTables = Array.from({ length: 5 }).map((_, i) => ({
             restaurant_id: newRest.id,
@@ -103,7 +102,7 @@ export async function updateRestaurantDailyStatus(id: string, formData: FormData
     const supabase = await createClient()
     const is_open = formData.get('is_open') === 'on'
     const { error } = await supabase.from('restaurants').update({ is_open }).eq('id', id)
-    if (error) return { error: 'Güncelleme hatası: ' + error.message }
+    if (error) return { error: 'Update error: ' + error.message }
     revalidatePath(`/admin/restaurants/${id}`)
     revalidatePath(`/admin/restaurants/${id}/settings`)
     return { success: true }
@@ -143,8 +142,8 @@ export async function updateRestaurantBrand(id: string, formData: FormData) {
 
     const { error } = await supabase.from('restaurants').update(updates).eq('id', id)
     if (error) {
-        if (error.code === '23505') return { error: 'Bu URL uzantısı (slug) zaten kullanılıyor.' }
-        return { error: 'Güncelleme hatası: ' + error.message }
+        if (error.code === '23505') return { error: 'This URL slug is already in use.' }
+        return { error: 'Update error: ' + error.message }
     }
     revalidatePath(`/admin/restaurants/${id}`)
     revalidatePath(`/admin/restaurants/${id}/settings`)
@@ -167,7 +166,7 @@ export async function updateRestaurantCorporate(id: string, formData: FormData) 
         social_twitter: formData.get('social_twitter') as string,
     }
     const { error } = await supabase.from('restaurants').update(updates).eq('id', id)
-    if (error) return { error: 'Güncelleme hatası: ' + error.message }
+    if (error) return { error: 'Update error: ' + error.message }
     revalidatePath(`/admin/restaurants/${id}`)
     revalidatePath(`/admin/restaurants/${id}/settings`)
     return { success: true }
@@ -190,7 +189,7 @@ export async function updateRestaurantCampaign(id: string, formData: FormData) {
 export async function updateLiteMode(id: string, is_lite_mode: boolean) {
     const supabase = await createClient()
     const { error } = await supabase.from('restaurants').update({ is_lite_mode }).eq('id', id)
-    if (error) return { error: 'Güncelleme hatası: ' + error.message }
+    if (error) return { error: 'Update error: ' + error.message }
     revalidatePath(`/admin/restaurants/${id}`)
     revalidatePath(`/admin/restaurants/${id}/settings`)
     return { success: true }
@@ -204,31 +203,26 @@ export async function updateRestaurantMenuAppearance(id: string, formData: FormD
         is_lite_mode: formData.get('is_lite_mode') === 'on',
     }
     const { error } = await supabase.from('restaurants').update(updates).eq('id', id)
-    if (error) return { error: 'Güncelleme hatası: ' + error.message }
+    if (error) return { error: 'Update error: ' + error.message }
     revalidatePath(`/admin/restaurants/${id}`)
     revalidatePath(`/admin/restaurants/${id}/settings`)
     return { success: true }
 }
 
 export async function updateRestaurantSystem(id: string, formData: FormData) {
-    console.log('--- UPDATE SYSTEM TEST ---');
-    console.log('ID:', id);
     const supabase = await createClient()
 
-    // 1. KESİN VE ACİL: Kullanıcı gerçekten Authentication sağlamış mı kontrolü (Cookie zafiyeti koruması)
+    // Auth check: Verify user is authenticated (cookie security protection)
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-        console.log('FAILURE: Unauthenticated access attempt blocked!');
-        return { error: 'Unauthorized: Lütfen önce sistemde oturum açınız.' };
+        return { error: 'Unauthorized: Please log in first.' };
     }
 
-    // 2. Şimdi ROL kontrolü
+    // Role check
     const role = await getUserRole()
-    console.log('Role:', role);
 
     if (role !== 'super_admin') {
-        console.log('FAILURE: Unauthorized role');
-        return { error: 'Yetkisiz işlem.' }
+        return { error: 'Unauthorized operation.' }
     }
 
     const updates: any = {
@@ -250,7 +244,7 @@ export async function updateRestaurantSystem(id: string, formData: FormData) {
 export async function deleteRestaurant(id: string) {
     const supabase = await createClient();
     const role = await getUserRole();
-    if (role !== 'super_admin') return { error: 'Yetkisiz işlem.' };
+    if (role !== 'super_admin') return { error: 'Unauthorized operation.' };
 
     // Yumuşak silme: Silmek yerine deleted_at değerini giriyoruz.
     const { error } = await supabase
@@ -270,7 +264,7 @@ export async function deleteRestaurant(id: string) {
 export async function restoreRestaurant(id: string) {
     const supabase = await createClient();
     const role = await getUserRole();
-    if (role !== 'super_admin') return { error: 'Yetkisiz işlem.' };
+    if (role !== 'super_admin') return { error: 'Unauthorized operation.' };
 
     const { error } = await supabase
         .from('restaurants')
@@ -289,7 +283,7 @@ export async function restoreRestaurant(id: string) {
 export async function hardDeleteRestaurant(id: string) {
     const supabase = await createClient();
     const role = await getUserRole();
-    if (role !== 'super_admin') return { error: 'Yetkisiz işlem.' };
+    if (role !== 'super_admin') return { error: 'Unauthorized operation.' };
 
     const { error } = await supabase.from('restaurants').delete().eq('id', id);
     if (error) return { error: error.message };
@@ -301,7 +295,7 @@ export async function hardDeleteRestaurant(id: string) {
 export async function toggleRestaurantActiveStatus(id: string, currentStatus: boolean) {
     const supabase = await createClient();
     const role = await getUserRole();
-    if (role !== 'super_admin') return { error: 'Yetkisiz işlem.' };
+    if (role !== 'super_admin') return { error: 'Unauthorized operation.' };
 
     const { error } = await supabase.from('restaurants').update({ is_active: !currentStatus }).eq('id', id);
     if (error) return { error: error.message };

@@ -53,7 +53,7 @@ export default function WaiterCallsPage({ params }: { params: Promise<{ id: stri
                         try {
                             const audio = new Audio(bellSoundUrl);
                             audio.volume = 0.9;
-                            audio.play().catch(e => console.log('Audio play blocked:', e));
+                            audio.play().catch(e => console.warn('Audio play blocked:', e));
                         } catch (e) { }
                     }
 

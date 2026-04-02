@@ -103,7 +103,7 @@ export function OrdersTracker({ restaurantId }: { restaurantId: string }) {
         try {
             const audio = new Audio('/sounds/notification.mp3');
             audio.volume = 0.8;
-            audio.play().catch(e => console.log('Audio play failed:', e));
+            audio.play().catch(e => console.warn('Audio play failed:', e));
         } catch (e) {
             console.error('Audio Error', e);
         }

@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
         if (res?.error) {
             setError(res.error)
         } else {
-            setMessage('E-posta adresinize sıfırlama bağlantısı gönderildi.')
+            setMessage('A password reset link has been sent to your email address.')
         }
     }
 
@@ -29,16 +29,16 @@ export default function ForgotPasswordPage() {
         <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
             <div className="w-full max-w-sm space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-gray-900">Şifre Sıfırlama</h2>
-                    <p className="text-sm text-gray-500 mt-2">Kayıtlı e-posta adresinizi girin.</p>
+                    <h2 className="text-xl font-bold text-gray-900">Password Reset</h2>
+                    <p className="text-sm text-gray-500 mt-2">Enter your registered email address.</p>
                 </div>
 
                 {!message ? (
                     <form action={handleSubmit} className="space-y-4">
-                        <Input name="email" type="email" label="E-Posta" required />
+                        <Input name="email" type="email" label="Email" required />
                         {error && <p className="text-red-500 text-sm">{error}</p>}
                         <Button type="submit" fullWidth disabled={loading}>
-                            {loading ? 'Gönderiliyor...' : 'Bağlantı Gönder'}
+                            {loading ? 'Sending...' : 'Send Reset Link'}
                         </Button>
                     </form>
                 ) : (
@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
 
                 <div className="text-center">
                     <Link href="/auth/login" className="text-sm text-gray-500 hover:text-black">
-                        ← Giriş'e Dön
+                        ← Back to Login
                     </Link>
                 </div>
             </div>

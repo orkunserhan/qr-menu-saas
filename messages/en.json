@@ -531,6 +531,8 @@
         "editProduct": "Edit Product",
         "changeImage": "Change Image (Optional)",
         "update": "Update",
-        "staffEmpty": "No staff members added."
+        "staffEmpty": "No staff members added.",
+        "active": "Active",
+        "inactive": "Inactive"
     }
 }

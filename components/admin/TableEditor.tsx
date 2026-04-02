@@ -4,6 +4,10 @@ import { useState, useRef, useEffect } from 'react';
 import { DndContext, useDraggable, useSensor, useSensors, PointerSensor, DragEndEvent } from '@dnd-kit/core';
 import { createTable, updateTablePosition, deleteTable } from '@/app/[locale]/admin/table-actions';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
+import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/Button';
+import { QRCodeValues } from './QRCodeModal';
+
 
 // Renk Haritası
 const tableColors: any = {
@@ -81,7 +85,8 @@ function DraggableTable({ table, onDelete, onShowQR }: { table: any, onDelete: (
     );
 }
 
-export function TableEditor({ restaurantId, initialTables }: { restaurantId: string, initialTables: any[] }) {
+export function TableEditor({ restaurantId, restaurantSlug, initialTables }: { restaurantId: string, restaurantSlug: string, initialTables: any[] }) {
+    const t = useTranslations('admin.tables');
     const [tables, setTables] = useState(initialTables);
     const [newTableName, setNewTableName] = useState('');
     const [newTableColor, setNewTableColor] = useState('gray'); // Default color
@@ -143,42 +148,42 @@ export function TableEditor({ restaurantId, initialTables }: { restaurantId: str
     return (
         <div className="space-y-4">
             {/* Kontrol Paneli */}
-            <div className="flex flex-wrap gap-2 bg-white p-4 rounded-xl border shadow-sm items-center">
+            <div className="flex flex-wrap gap-2 bg-white dark:bg-zinc-900 p-4 rounded-xl border dark:border-zinc-800 shadow-sm items-center">
                 <input
                     type="text"
                     value={newTableName}
                     onChange={(e) => setNewTableName(e.target.value)}
-                    placeholder="Masa Adı (Örn: Cam 1)"
-                    className="border px-3 py-2 rounded-lg text-sm flex-1 focus:ring-black focus:border-black min-w-[150px]"
+                    placeholder={t('tableName')}
+                    className="border dark:border-zinc-800 dark:bg-zinc-800 px-3 py-2 rounded-lg text-sm flex-1 focus:ring-black focus:border-black min-w-[150px]"
                 />
 
                 {/* Renk Seçici */}
                 <select
                     value={newTableColor}
                     onChange={(e) => setNewTableColor(e.target.value)}
-                    className="border px-3 py-2 rounded-lg text-sm focus:ring-black focus:border-black cursor-pointer"
+                    className="border dark:border-zinc-800 dark:bg-zinc-800 px-3 py-2 rounded-lg text-sm focus:ring-black focus:border-black cursor-pointer"
                 >
-                    <option value="gray">Gri (Standart)</option>
-                    <option value="red">Kırmızı</option>
-                    <option value="blue">Mavi</option>
-                    <option value="green">Yeşil</option>
-                    <option value="yellow">Sarı</option>
-                    <option value="purple">Mor</option>
+                    <option value="gray">{t('tableColor')}: Gray</option>
+                    <option value="red">{t('tableColor')}: Red</option>
+                    <option value="blue">{t('tableColor')}: Blue</option>
+                    <option value="green">{t('tableColor')}: Green</option>
+                    <option value="yellow">{t('tableColor')}: Yellow</option>
+                    <option value="purple">{t('tableColor')}: Purple</option>
                 </select>
 
-                <button
+                <Button
                     onClick={handleAddTable}
                     disabled={!newTableName}
                     className="bg-black text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-gray-800 disabled:opacity-50"
                 >
-                    + Masa Ekle
-                </button>
+                    + {t('addTable')}
+                </Button>
             </div>
 
             {/* Simülasyon Alanı (Canvas) */}
-            <div ref={containerRef} className="relative w-full h-[600px] bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl overflow-hidden shadow-inner bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
-                <div className="absolute top-2 left-2 bg-white/80 px-2 py-1 rounded text-xs text-gray-400 pointer-events-none z-0">
-                    Restoran Alanı (Sürükle & Bırak) - Giriş Burası Varsayılır ↓
+            <div ref={containerRef} className="relative w-full h-[600px] bg-gray-100 dark:bg-zinc-950 border-2 border-dashed border-gray-300 dark:border-zinc-800 rounded-xl overflow-hidden shadow-inner bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:16px_16px]">
+                <div className="absolute top-2 left-2 bg-white/80 dark:bg-black/50 px-2 py-1 rounded text-xs text-gray-400 pointer-events-none z-0">
+                   {t('layoutDesc')}
                 </div>
 
                 <DndContext
@@ -204,28 +209,25 @@ export function TableEditor({ restaurantId, initialTables }: { restaurantId: str
             {/* QR Gösterim Modal */}
             {qrModalTable && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-in fade-in">
-                    <div className="bg-white p-6 rounded-2xl max-w-sm w-full text-center relative shadow-2xl">
+                    <div className="bg-white p-8 rounded-[2rem] max-w-sm w-full text-center relative shadow-2xl scale-in-center">
                         <button
                             onClick={() => setQrModalTable(null)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-black"
+                            className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors"
                         >
-                            ✕
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
 
-                        <h3 className="font-bold text-lg mb-1">{qrModalTable.name}</h3>
-                        <p className="text-xs text-gray-500 mb-6">Masa QR Kodu</p>
+                        <QRCodeValues slug={restaurantSlug} name={qrModalTable.name} table={qrModalTable.name} />
 
-                        <div className="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-200 mb-4 break-all text-xs text-gray-600 font-mono">
-                            ?tableId={qrModalTable.id}
+                        <div className="mt-4">
+                            <a
+                                href={`/${restaurantSlug}?table=${encodeURIComponent(qrModalTable.name)}`}
+                                target="_blank"
+                                className="block w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold transition-all text-sm"
+                            >
+                                ✨ Menüyü Aç & Test Et
+                            </a>
                         </div>
-
-                        <a
-                            href={`/demo-burger?tableId=${qrModalTable.id}`}
-                            target="_blank"
-                            className="block w-full py-3 bg-black text-white rounded-xl font-bold hover:bg-gray-800"
-                        >
-                            Menüyü Aç & Test Et
-                        </a>
                     </div>
                 </div>
             )}

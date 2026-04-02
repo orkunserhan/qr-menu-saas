@@ -4,7 +4,10 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/src/i18n/routing';
 import ToasterProvider from '@/components/ToasterProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { Inter } from 'next/font/google';
 import "../globals.css";
+
+const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 
 export const metadata = {
     title: 'QR Menu System',
@@ -28,7 +31,7 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body className="antialiased dark:bg-gray-900 transition-colors duration-300">
+            <body className={`${inter.variable} font-sans antialiased dark:bg-gray-900 transition-colors duration-300`}>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                     <NextIntlClientProvider messages={messages}>
                         <ToasterProvider />

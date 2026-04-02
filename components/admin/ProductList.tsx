@@ -1,17 +1,29 @@
 'use client'
 
 import { useState } from 'react'
-import { createProduct, deleteProduct, toggleProductAvailability } from '@/app/[locale]/admin/actions'
+import { createProduct, deleteProduct, toggleProductAvailability, updateProduct } from '@/app/[locale]/admin/actions'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { Textarea } from '@/components/ui/Textarea'
 import { ImageUploader } from './ImageUploader'
 import { useTranslations } from 'next-intl'
 
 export function ProductList({ categoryId, restaurantId, products }: { categoryId: string, restaurantId: string, products: any[] }) {
     const t = useTranslations('components');
     const [isAdding, setIsAdding] = useState(false)
+    const [editingProduct, setEditingProduct] = useState<any | null>(null)
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [activeTab, setActiveTab] = useState<'en' | 'de' | 'sk' | 'it' | 'fr' | 'tr'>('en')
+
+    const langs = [
+        { code: 'en', name: 'İngilizce (Default)', mandatory: true },
+        { code: 'de', name: 'Almanca', mandatory: false },
+        { code: 'sk', name: 'Slovakça', mandatory: false },
+        { code: 'it', name: 'İtalyanca', mandatory: false },
+        { code: 'fr', name: 'Fransızca', mandatory: false },
+        { code: 'tr', name: 'Türkçe', mandatory: false }
+    ] as const;
 
     async function handleAdd(formData: FormData) {
         setLoading(true)
@@ -25,8 +37,21 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
         }
     }
 
+    async function handleUpdate(formData: FormData) {
+        if (!editingProduct) return;
+        setLoading(true)
+        setErrorMessage(null)
+        const res = await updateProduct(editingProduct.id, restaurantId, formData)
+        setLoading(false)
+        if (res?.error) {
+            setErrorMessage(res.error)
+        } else {
+            setEditingProduct(null)
+        }
+    }
+
     async function handleDelete(id: string) {
-        if (!confirm('Bu ürünü silmek istediğinize emin misiniz?')) return;
+        if (!confirm(t('deleteConfirm'))) return;
         try {
             await deleteProduct(id, restaurantId);
         } catch (err: any) {
@@ -75,7 +100,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {/* Stok Butonu */}
-                                    <button
+                                     <button
                                         onClick={() => handleToggleStock(product.id, product.is_available)}
                                         className={`text-xs px-2 py-1 rounded border transition-colors ${product.is_available
                                             ? 'border-green-200 text-green-700 hover:bg-green-50'
@@ -83,6 +108,13 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                             }`}
                                     >
                                         {product.is_available ? t('available') : t('outOfStock')}
+                                    </button>
+
+                                    <button
+                                        onClick={() => setEditingProduct(product)}
+                                        className="text-xs text-blue-500 hover:bg-blue-50 p-1.5 rounded transition-colors"
+                                    >
+                                        ✏️
                                     </button>
 
                                     <button onClick={() => handleDelete(product.id)} className="text-xs text-red-500 hover:bg-red-50 p-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
@@ -102,44 +134,138 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
             </div>
 
             {/* Add Form */}
-            {isAdding ? (
+            {isAdding && (
                 <form action={handleAdd} className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-2 animate-in fade-in slide-in-from-top-1">
-                    <h4 className="text-sm font-semibold mb-3">Yeni Ürün Ekle</h4>
+                    <h4 className="text-sm font-semibold mb-3">{t('productAdd')}</h4>
                     <div className="space-y-3">
-                        <Input name="name" placeholder="Ürün Adı (Örn: Adana Kebap)" required autoFocus className="bg-white" />
+                        <Input name="name" placeholder={t('productNamePlaceholder')} required autoFocus className="bg-white" />
 
                         <div className="grid grid-cols-2 gap-3">
-                            <Input name="price" type="number" step="0.01" placeholder="Fiyat (€)" required className="bg-white" />
-                            <Input name="calories" type="number" placeholder="Kalori (kcal)" className="bg-white" />
+                            <Input name="price" type="number" step="0.01" placeholder={t('price')} required className="bg-white" />
+                            <Input name="calories" type="number" placeholder={t('calories')} className="bg-white" />
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <Input name="preparation_time" type="number" placeholder="Hazırlama (Dk)" className="bg-white" />
-                            <Input name="video_url" type="url" placeholder="Video Link (Youtube/Mp4)" className="bg-white" />
+                            <Input name="preparation_time" type="number" placeholder={t('preparationTime')} className="bg-white" />
+                            <Input name="video_url" type="url" placeholder={t('videoLink')} className="bg-white" />
                         </div>
 
                         {/* YENİ GÖRSEL YÜKLEYİCİ */}
-                        <ImageUploader
-                            name="image"
-                            label="Ürün Görseli"
-                        />
+                        <ImageUploader name="image" label={t('productImage')} />
 
+                        {/* MULTI-LANGUAGE DESCRIPTIONS */}
+                        <div className="space-y-2 mt-4">
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('descriptions')}</label>
+                            <div className="flex flex-wrap gap-1 border-b pb-2">
+                                {langs.map(l => (
+                                    <button
+                                        key={l.code}
+                                        type="button"
+                                        onClick={() => setActiveTab(l.code)}
+                                        className={`px-3 py-1 text-[10px] font-bold rounded-t-md transition-colors ${activeTab === l.code ? 'bg-black text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`}
+                                    >
+                                        {l.name}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="mt-2">
+                                {langs.map(l => (
+                                    <div key={l.code} className={activeTab === l.code ? 'block' : 'hidden'}>
+                                        <Textarea
+                                            name={`description_${l.code}`}
+                                            placeholder={`${l.name} açıklama yazın...`}
+                                            required={l.mandatory}
+                                            rows={2}
+                                            className="bg-white text-sm"
+                                        />
+                                        {l.mandatory && <span className="text-[10px] text-red-500 mt-1 block">* Bu alan zorunludur (Sistem fallback olarak kullanır).</span>}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
-                    <Input name="description" placeholder="Açıklama (İsteğe bağlı)" className="bg-white" />
-
                     {errorMessage && (
-                        <div className="text-red-500 text-sm mt-2">{errorMessage}</div>
+                        <div className="text-red-500 text-sm mt-2 font-medium">{errorMessage}</div>
                     )}
 
-                    <div className="flex justify-end gap-2 mt-2">
+                    <div className="flex justify-end gap-2 mt-4">
                         <Button type="button" variant="ghost" size="sm" onClick={() => setIsAdding(false)}>{t('cancel')}</Button>
                         <Button type="submit" size="sm" disabled={loading}>
                             {loading ? "..." : t('add')}
                         </Button>
                     </div>
                 </form>
-            ) : (
+            )}
+
+            {/* Edit Form */}
+            {editingProduct && (
+                <form action={handleUpdate} className="bg-blue-50/30 p-4 rounded-lg border border-blue-200 mt-2 animate-in fade-in zoom-in-95">
+                    <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <span className="text-blue-500">✏️</span> {t('editProduct')}: {editingProduct.name}
+                    </h4>
+                    <div className="space-y-3">
+                        <Input name="name" defaultValue={editingProduct.name} placeholder={t('productNamePlaceholder')} required className="bg-white" />
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <Input name="price" type="number" step="0.01" defaultValue={editingProduct.price} placeholder={t('price')} required className="bg-white" />
+                            <Input name="calories" type="number" defaultValue={editingProduct.calories} placeholder={t('calories')} className="bg-white" />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <Input name="preparation_time" type="number" defaultValue={editingProduct.preparation_time} placeholder={t('preparationTime')} className="bg-white" />
+                            <Input name="video_url" type="url" defaultValue={editingProduct.video_url} placeholder={t('videoLink')} className="bg-white" />
+                        </div>
+
+                        <ImageUploader name="image" label={t('changeImage')} />
+
+                        {/* MULTI-LANGUAGE DESCRIPTIONS */}
+                        <div className="space-y-2 mt-4">
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('descriptions')}</label>
+                            <div className="flex flex-wrap gap-1 border-b pb-2">
+                                {langs.map(l => (
+                                    <button
+                                        key={l.code}
+                                        type="button"
+                                        onClick={() => setActiveTab(l.code)}
+                                        className={`px-3 py-1 text-[10px] font-bold rounded-t-md transition-colors ${activeTab === l.code ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}`}
+                                    >
+                                        {l.name}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="mt-2">
+                                {langs.map(l => (
+                                    <div key={l.code} className={activeTab === l.code ? 'block' : 'hidden'}>
+                                        <Textarea
+                                            name={`description_${l.code}`}
+                                            defaultValue={editingProduct.description_translations?.[l.code] || (l.code === 'en' ? editingProduct.description : '')}
+                                            placeholder={`${l.name} açıklama...`}
+                                            required={l.mandatory}
+                                            rows={2}
+                                            className="bg-white text-sm"
+                                        />
+                                        {l.mandatory && <span className="text-[10px] text-red-500 mt-1 block">* Bu alan zorunludur.</span>}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {errorMessage && (
+                        <div className="text-red-500 text-sm mt-2 font-medium">{errorMessage}</div>
+                    )}
+
+                    <div className="flex justify-end gap-2 mt-4">
+                        <Button type="button" variant="ghost" size="sm" onClick={() => setEditingProduct(null)}>{t('cancel')}</Button>
+                        <Button type="submit" size="sm" disabled={loading} className="bg-blue-600 hover:bg-blue-700">
+                            {loading ? "..." : t('update')}
+                        </Button>
+                    </div>
+                </form>
+            )}
+
+            {!isAdding && !editingProduct && (
                 <button
                     onClick={() => setIsAdding(true)}
                     className="w-full py-2 text-sm text-gray-500 hover:text-black hover:bg-gray-50 rounded-lg border border-dashed border-gray-200 transition-colors"

@@ -47,12 +47,35 @@ export async function createOrder(
 ): Promise<CreateOrderResult> {
     const supabase = await createClient()
 
-    // 1. Validate Input (Boş stringleri null'a çevir)
-    const normalizedTableId = tableId && tableId.trim() !== '' ? tableId : null;
+    // 1. Resolve Table ID if it's a name/slug instead of UUID
+    let resolvedTableId: string | null = null;
+    if (tableId && tableId.trim() !== '') {
+        // Check if it's already a UUID
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(tableId)) {
+            resolvedTableId = tableId;
+        } else {
+            // It's a name (e.g. "5"), resolve it
+            const { data: tableData } = await supabase
+                .from('tables')
+                .select('id')
+                .eq('restaurant_id', restaurantId)
+                .eq('name', tableId)
+                .single();
+            
+            if (tableData) {
+                resolvedTableId = tableData.id;
+            } else {
+                // If table not found by name, we might still insert it as NULL or handle it
+                console.warn(`Table not found by name: ${tableId}`);
+                resolvedTableId = null;
+            }
+        }
+    }
 
     const validation = CreateOrderSchema.safeParse({
         restaurantId,
-        tableId: normalizedTableId,
+        tableId: resolvedTableId,
         totalAmount,
         items,
         customerNote: note
@@ -60,7 +83,7 @@ export async function createOrder(
 
     if (!validation.success) {
         console.error("Order Validation Failed:", validation.error.format());
-        return { success: false, error: "Geçersiz sipariş verisi.", code: "VALIDATION_ERROR" };
+        return { success: false, error: "invalidOrderData", code: "VALIDATION_ERROR" };
     }
 
     const data = validation.data;
@@ -74,18 +97,18 @@ export async function createOrder(
             .in('id', productIds);
 
         if (prodError || !dbProducts) {
-            return { success: false, error: "Ürün bilgileri kontrol edilemedi.", code: "STOCK_CHECK_ERROR" };
+            return { success: false, error: "stockCheckError", code: "STOCK_CHECK_ERROR" };
         }
 
         for (const item of data.items) {
             const product = dbProducts.find(p => p.id === item.product_id);
 
             if (!product) {
-                return { success: false, error: `Ürün bulunamadı: ID ${item.product_id}`, code: "PRODUCT_NOT_FOUND" };
+                return { success: false, error: "productNotFound", code: "PRODUCT_NOT_FOUND" };
             }
 
             if (!product.is_available) {
-                return { success: false, error: `${product.name} şu an tükendi.`, code: "OUT_OF_STOCK" };
+                return { success: false, error: "outOfStock", code: "OUT_OF_STOCK" };
             }
         }
         // --- END AVAILABILITY CHECK ---
@@ -106,9 +129,8 @@ export async function createOrder(
 
         if (orderError) {
             console.error('Order Insert Error:', orderError);
-            await logSystem('Sipariş DB Hatası', 'error', restaurantId, { error: orderError });
-            // Hata mesajını detaylı göstererek neyin eksik olduğunu frontend'de görelim
-            return { success: false, error: 'Sipariş oluşturulamadı: ' + orderError.message, code: "DB_INSERT_ERROR" }
+            await logSystem('Order DB Error', 'error', restaurantId, { error: orderError });
+            return { success: false, error: 'orderCreateError', code: "DB_INSERT_ERROR" }
         }
 
         // 3. Insert Order Items
@@ -127,8 +149,8 @@ export async function createOrder(
         if (itemsError) {
             console.error('Order Items Insert Error:', itemsError);
             await supabase.from('orders').delete().eq('id', order.id);
-            await logSystem('Sipariş Detay Hatası', 'error', restaurantId, { error: itemsError });
-            return { success: false, error: 'Ürünler eklenemedi, sipariş iptal edildi.', code: "DB_ITEMS_ERROR" }
+            await logSystem('Order Items Error', 'error', restaurantId, { error: itemsError });
+            return { success: false, error: 'orderItemsError', code: "DB_ITEMS_ERROR" }
         }
 
         // 4. Trigger Notifications (Supabase Realtime handles this automatically)
@@ -138,7 +160,7 @@ export async function createOrder(
 
     } catch (err: any) {
         console.error("Unexpected Create Order Error:", err);
-        return { success: false, error: "Beklenmedik bir hata oluştu.", code: "INTERNAL_ERROR" };
+        return { success: false, error: "internalError", code: "INTERNAL_ERROR" };
     }
 }
 

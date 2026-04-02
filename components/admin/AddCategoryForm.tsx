@@ -20,15 +20,15 @@ export function AddCategoryForm({ restaurantId }: { restaurantId: string }) {
 
     if (!isOpen) {
         return (
-            <Button onClick={() => setIsOpen(true)} variant="secondary" fullWidth className="border-dashed border-2 bg-gray-50 mb-8">
+            <Button onClick={() => setIsOpen(true)} variant="secondary" fullWidth className="border-dashed border-2 bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 mb-8 font-bold">
                 {t('addCategory')}
             </Button>
         )
     }
 
     return (
-        <form action={handleSubmit} className="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-8 animate-in fade-in slide-in-from-top-2">
-            <h3 className="font-semibold mb-3">{t('addCategoryTitle')}</h3>
+        <form action={handleSubmit} className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl border border-gray-200 dark:border-gray-800 mb-8 animate-in fade-in slide-in-from-top-2">
+            <h3 className="font-semibold mb-3 text-gray-900 dark:text-white">{t('addCategoryTitle')}</h3>
             <div className="flex gap-2">
                 <Input name="name" placeholder={t('addCategoryExample')} autoFocus required />
                 <Button type="submit" disabled={loading}>{t('add')}</Button>

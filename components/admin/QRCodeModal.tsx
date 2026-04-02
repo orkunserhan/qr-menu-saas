@@ -5,20 +5,12 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
 
-export function QRCodeValues({ slug, name }: { slug: string, name: string }) {
+export function QRCodeValues({ slug, name, table }: { slug: string, name: string, table?: string }) {
     const t = useTranslations('components');
     const qrRef = useRef<SVGSVGElement>(null);
 
-    // Tam URL (Deployment sonrası domain değişecek, şimdilik window.location veya sabit domain)
-    // Client side çalıştığı için window kullanılabilir, ama SSR hatası olmaması için useEffect veya basitçe domain stringi
-    // Şimdilik dinamik olarak window.location.origin kullanacağız ama admin panelinde olduğumuz için
-    // menünün public url'ini manuel oluşturmak daha güvenli.
-
-    // NOT: Canlıya alınca 'https://qrmenu.com' gibi bir base URL olmalı.
-    // Şimdilik geliştirme ortamında localhost varsayıyoruz. 
-    // Ancak QR kodun içine tam URL gömmek en iyisi.
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://qrmenu.com';
-    const menuUrl = `${baseUrl}/${slug}`;
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const menuUrl = `${baseUrl}/${slug}${table ? `?table=${encodeURIComponent(table)}` : ''}`;
 
     const downloadQR = () => {
         const svg = qrRef.current;
@@ -29,29 +21,29 @@ export function QRCodeValues({ slug, name }: { slug: string, name: string }) {
         const ctx = canvas.getContext("2d");
         const img = new Image();
 
-        // SVG'yi base64'e çevir
         img.onload = () => {
-            canvas.width = img.width + 40; // Padding
-            canvas.height = img.height + 60; // Padding + Text space
+            canvas.width = img.width + 40;
+            canvas.height = img.height + 80;
 
             if (ctx) {
-                // Arkaplan
                 ctx.fillStyle = "white";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // QR Kodunu Çiz
                 ctx.drawImage(img, 20, 20);
-
-                // Altına Restoran Adını Yaz
-                ctx.font = "bold 20px sans-serif";
+                
+                ctx.font = "bold 24px sans-serif";
                 ctx.fillStyle = "black";
                 ctx.textAlign = "center";
-                ctx.fillText(name, canvas.width / 2, canvas.height - 20);
+                ctx.fillText(name, canvas.width / 2, canvas.height - 45);
+                
+                if (table) {
+                    ctx.font = "16px sans-serif";
+                    ctx.fillStyle = "#666";
+                    ctx.fillText(table, canvas.width / 2, canvas.height - 20);
+                }
 
-                // İndir
                 const pngFile = canvas.toDataURL("image/png");
                 const downloadLink = document.createElement("a");
-                downloadLink.download = `${slug}-qr.png`;
+                downloadLink.download = `${slug}-${table || 'general'}-qr.png`;
                 downloadLink.href = pngFile;
                 downloadLink.click();
             }
@@ -61,28 +53,31 @@ export function QRCodeValues({ slug, name }: { slug: string, name: string }) {
     };
 
     return (
-        <div className="flex flex-col items-center gap-4 p-6 bg-white rounded-xl border border-gray-200 text-center">
-            <h3 className="font-bold text-lg mb-2">{t('qrCardTitle')}</h3>
+        <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-2xl border border-gray-100 text-center shadow-sm">
+            <h3 className="font-black text-xl tracking-tight text-gray-900 leading-tight">
+                {name} {table && <span className="text-orange-600 block text-sm mt-1">{table}</span>}
+            </h3>
 
-            <div className="p-4 bg-white border-2 border-black rounded-xl shadow-lg">
+            <div className="p-6 bg-white border-[3px] border-black rounded-3xl shadow-xl hover:scale-[1.02] transition-transform duration-300">
                 <QRCodeSVG
                     value={menuUrl}
-                    size={200}
-                    level={"H"} // Yüksek hata düzeltme
+                    size={220}
+                    level={"H"}
                     includeMargin={true}
                     ref={qrRef}
                 />
             </div>
 
-            <div className="text-sm text-gray-500 max-w-[200px] break-all">
+            <div className="text-[10px] font-mono text-gray-400 max-w-[240px] break-all bg-gray-50 p-2 rounded-lg border border-gray-100">
                 {menuUrl}
             </div>
 
-            <Button onClick={downloadQR} fullWidth className="mt-2">
+            <Button onClick={downloadQR} fullWidth className="mt-2 bg-black hover:bg-zinc-800 text-white font-bold rounded-xl py-6">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                 {t('qrDownloadBtn')}
             </Button>
-            <p className="text-xs text-gray-400 mt-1">
-                Bunu yazdırıp masalarınıza yapıştırabilirsiniz.
+            <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
+                PRO SCAN TECHNOLOGY
             </p>
         </div>
     );
@@ -91,13 +86,13 @@ export function QRCodeValues({ slug, name }: { slug: string, name: string }) {
 // Modal Wrapper
 import { useState } from 'react';
 
-export function QRCodeModal({ slug, name }: { slug: string, name: string }) {
+export function QRCodeModal({ slug, name, table }: { slug: string, name: string, table?: string }) {
     const t = useTranslations('components');
     const [isOpen, setIsOpen] = useState(false);
 
     if (!isOpen) {
         return (
-            <Button variant="outline" size="sm" onClick={() => setIsOpen(true)} className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setIsOpen(true)} className="flex items-center gap-2 font-bold border-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M7 7h.01" /><path d="M7 17h.01" /><path d="M17 7h.01" /><path d="M17 17h.01" /></svg>
                 {t('qrCodeBtn')}
             </Button>
@@ -105,16 +100,17 @@ export function QRCodeModal({ slug, name }: { slug: string, name: string }) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
-            <div className="relative w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in transition-all">
+            <div className="relative w-full max-w-sm scale-in-center" onClick={(e) => e.stopPropagation()}>
                 <button
                     onClick={() => setIsOpen(false)}
-                    className="absolute -top-12 right-0 text-white hover:text-gray-200"
+                    className="absolute -top-12 right-0 text-white/80 hover:text-white flex items-center gap-2 font-bold transition-colors"
                 >
-                    Kapat [x]
+                    <span>CLOSE</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
 
-                <QRCodeValues slug={slug} name={name} />
+                <QRCodeValues slug={slug} name={name} table={table} />
             </div>
         </div>
     )

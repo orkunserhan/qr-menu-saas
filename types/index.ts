@@ -2,6 +2,7 @@ export type Product = {
     id: string;
     name: string;
     description: string;
+    description_translations?: Record<string, string>;
     price: number;
     image_url: string | null;
     calories: number;
@@ -11,6 +12,7 @@ export type Product = {
     category_id: string;
     stock_quantity: number | null; // null means unlimited
     track_stock: boolean;
+    tags?: string[];
 };
 
 export type Category = {
@@ -41,6 +43,7 @@ export type Restaurant = {
     subscription_end_date?: string | null;
     is_active?: boolean;
     is_payment_enabled?: boolean;
+    is_lite_mode?: boolean;
     stripe_account_id?: string | null;
 };
 

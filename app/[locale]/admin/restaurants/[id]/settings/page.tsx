@@ -4,6 +4,7 @@ import { StaffManager } from '@/components/admin/StaffManager';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import { getTranslations } from 'next-intl/server';
+import LiteModeToggle from '@/components/admin/LiteModeToggle';
 
 export default async function SettingsPage(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
@@ -55,6 +56,12 @@ export default async function SettingsPage(props: { params: Promise<{ id: string
                         <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
                             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('panelLang')}</label>
                             <LanguageSwitcher />
+                        </div>
+                        <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+                             <LiteModeToggle 
+                                restaurantId={restaurant.id} 
+                                initialLiteMode={restaurant.is_lite_mode} 
+                             />
                         </div>
                     </div>
                 </div>

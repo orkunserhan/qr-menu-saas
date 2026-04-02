@@ -67,7 +67,7 @@ export default async function Home() {
 
       {/* Modern Footer/Credits */}
       <footer className="absolute bottom-6 text-gray-500 text-sm font-medium z-10 w-full text-center">
-        © {new Date().getFullYear()} Better Businnes Alle Rechte vorbehalten
+        © {new Date().getFullYear()} Better Business. {t('footerRights')}
       </footer>
     </div>
   );

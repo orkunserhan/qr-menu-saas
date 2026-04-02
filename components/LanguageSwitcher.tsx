@@ -14,6 +14,11 @@ export default function LanguageSwitcher() {
 
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const nextLocale = e.target.value;
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('admin_locale', nextLocale);
+            // Also set a cookie for next-intl if possible
+            document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000`;
+        }
         startTransition(() => {
             router.replace(pathname, { locale: nextLocale });
         });

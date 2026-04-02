@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { toggleRestaurantActiveStatus, deleteRestaurant, restoreRestaurant, hardDeleteRestaurant } from '@/app/[locale]/admin/actions';
 
 // Tip tanımları
 type RestaurantStat = {
@@ -19,6 +20,7 @@ type RestaurantStat = {
     total_products: number;
     total_categories: number;
     total_feedback: number;
+    deleted_at: string | null;
 };
 
 export function SuperAdminDashboard({ user }: { user: any }) {
@@ -54,7 +56,7 @@ export function SuperAdminDashboard({ user }: { user: any }) {
 
     const highUsageRestaurants = [...stats].sort((a, b) => b.total_products - a.total_products).slice(0, 5);
 
-    if (loading) return <div className="p-8 text-center">Yükleniyor...</div>;
+    if (loading) return <div className="p-8 text-center">Loading...</div>;
 
     return (
         <div className="space-y-8">
@@ -68,17 +70,17 @@ export function SuperAdminDashboard({ user }: { user: any }) {
 
             {/* 2. Kritik Uyarılar (Yenileme Zamanı) */}
             {expiringSoon.length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-                    <h3 className="font-bold text-red-800 flex items-center gap-2">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl p-6">
+                    <h3 className="font-bold text-red-800 dark:text-red-400 flex items-center gap-2">
                         <span>{t('licenseExpiring')}</span>
                     </h3>
-                    <p className="text-sm text-red-600 mb-4">{t('licenseExpiringDesc')}</p>
+                    <p className="text-sm text-red-600 dark:text-red-300/70 mb-4">{t('licenseExpiringDesc')}</p>
                     <div className="grid gap-3">
                         {expiringSoon.map(r => (
-                            <div key={r.id} className="bg-white p-3 rounded-lg border flex justify-between items-center shadow-sm">
+                            <div key={r.id} className="bg-white dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-800 flex justify-between items-center shadow-sm">
                                 <div>
-                                    <div className="font-bold">{r.name}</div>
-                                    <div className="text-xs text-gray-500">{r.owner_email} | {new Date(r.subscription_end_date!).toLocaleDateString()}</div>
+                                    <div className="font-bold text-gray-900 dark:text-white">{r.name}</div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400">{r.owner_email} | {new Date(r.subscription_end_date!).toLocaleDateString()}</div>
                                 </div>
                                 <Button size="sm" variant="outline">{t('sendMail')}</Button>
                             </div>
@@ -89,21 +91,21 @@ export function SuperAdminDashboard({ user }: { user: any }) {
 
             {/* 3. Yüksek Kullanım (High Usage) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 className="font-bold text-lg mb-4">{t('busiestRestaurants')}</h3>
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+                    <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">{t('busiestRestaurants')}</h3>
                     <div className="space-y-4">
                         {highUsageRestaurants.map((r, i) => (
                             <div key={r.id} className="flex items-center justify-between border-b pb-2 last:border-0">
                                 <div className="flex items-center gap-3">
-                                    <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600">
+                                    <span className="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-400">
                                         {i + 1}
                                     </span>
                                     <div>
-                                        <div className="font-medium text-sm">{r.name}</div>
+                                        <div className="font-medium text-sm text-gray-900 dark:text-gray-100">{r.name}</div>
                                         <div className="text-xs text-gray-400">{r.total_categories} {t('category')}</div>
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-sm text-gray-700">
+                                <div className="font-mono font-bold text-sm text-gray-700 dark:text-gray-300">
                                     {t('productCount', { count: r.total_products })}
                                 </div>
                             </div>
@@ -112,14 +114,14 @@ export function SuperAdminDashboard({ user }: { user: any }) {
                 </div>
 
                 {/* 4. Veri Kalitesi & Öneriler */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 className="font-bold text-lg mb-4">{t('dataQuality')}</h3>
+                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+                    <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">{t('dataQuality')}</h3>
                     <div className="space-y-3">
                         {stats.filter(s => s.total_products < 5).map(r => (
-                            <div key={r.id} className="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg text-sm text-yellow-800">
+                            <div key={r.id} className="flex items-start gap-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-sm text-yellow-800 dark:text-yellow-400 border border-yellow-100 dark:border-yellow-800/30">
                                 <span className="text-xl">⚠️</span>
                                 <div>
-                                    <span className="font-bold">{r.name}</span> {t('looksEmpty', { count: r.total_products })}
+                                    <span className="font-bold text-yellow-900 dark:text-yellow-200">{r.name}</span> {t('looksEmpty', { count: r.total_products })}
                                     <div className="text-xs opacity-80 mt-1">{t('offerHelp')}</div>
                                 </div>
                             </div>
@@ -134,16 +136,16 @@ export function SuperAdminDashboard({ user }: { user: any }) {
             </div>
 
             {/* Tüm Restoranlar Tablosu */}
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                    <h3 className="font-bold text-lg">{t('allRestaurantsList')}</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white">{t('allRestaurantsList')}</h3>
                     <Link href="/admin/restaurants/new">
                         <Button size="sm">{t('addNew')}</Button>
                     </Link>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
-                        <thead className="bg-gray-50 text-gray-500 font-medium">
+                        <thead className="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 font-medium">
                             <tr>
                                 <th className="px-6 py-3">{t('restaurant')}</th>
                                 <th className="px-6 py-3">{t('owner')}</th>
@@ -153,19 +155,23 @@ export function SuperAdminDashboard({ user }: { user: any }) {
                                 <th className="px-6 py-3 text-right">{t('action')}</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                             {stats.map(r => (
-                                <tr key={r.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 font-medium text-gray-900">
+                                <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+                                    <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                         {r.name}
-                                        <div className="text-xs text-gray-400 font-normal">/{r.slug}</div>
+                                        <div className="text-xs text-gray-400 dark:text-gray-500 font-normal">/{r.slug}</div>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-600">{r.owner_email || '-'}</td>
+                                    <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{r.owner_email || '-'}</td>
                                     <td className="px-6 py-4">
-                                        {r.is_active ? (
-                                            <span className="inline-flex px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">{t('active')}</span>
+                                        {r.deleted_at ? (
+                                            <span className="inline-flex px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 rounded-full text-xs font-black animate-pulse">
+                                                🗑️ {t('restaurantPendingDeletion')} ({15 - Math.floor((new Date().getTime() - new Date(r.deleted_at).getTime()) / (1000 * 60 * 60 * 24))} {t('days') || 'days'})
+                                            </span>
+                                        ) : r.is_active ? (
+                                            <span className="inline-flex px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full text-xs">{t('active')}</span>
                                         ) : (
-                                            <span className="inline-flex px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">{t('inactive')}</span>
+                                            <span className="inline-flex px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-400 rounded-full text-xs">{t('inactive')}</span>
                                         )}
                                     </td>
                                     <td className="px-6 py-4">
@@ -182,9 +188,13 @@ export function SuperAdminDashboard({ user }: { user: any }) {
                                         {t('productCount', { count: r.total_products })} / {t('reviews', { count: r.total_feedback })}
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <Link href={`/admin/restaurants/${r.id}`}>
-                                            <Button variant="ghost" size="sm">{t('manage')}</Button>
-                                        </Link>
+                                        <div className="flex items-center gap-2 justify-end">
+                                            <Link href={`/admin/restaurants/${r.id}`}>
+                                                <Button variant="outline" size="sm" className="font-bold border-gray-200 dark:border-gray-800 hover:bg-black hover:text-white transition-all">
+                                                    {t('manage')} →
+                                                </Button>
+                                            </Link>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -198,12 +208,12 @@ export function SuperAdminDashboard({ user }: { user: any }) {
 
 function KpiCard({ title, value, icon, color }: { title: string, value: number, icon: string, color: string }) {
     return (
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
+        <div className="bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex items-start justify-between">
             <div>
-                <p className="text-gray-500 text-sm font-medium mb-1">{title}</p>
-                <h4 className="text-3xl font-bold text-gray-900">{value}</h4>
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">{title}</p>
+                <h4 className="text-3xl font-bold text-gray-900 dark:text-white">{value}</h4>
             </div>
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl ${color}`}>
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl ${color} dark:bg-opacity-20`}>
                 {icon}
             </div>
         </div>

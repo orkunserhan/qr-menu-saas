@@ -127,11 +127,19 @@
         "password": "Password",
         "forgotPassword": "Forgot Password?",
         "submit": "Submit",
-        "title": "Login to Panel",
-        "desc": "Log in to manage your QR Menu system.",
+        "title": "Sign in to Panel",
+        "desc": "Sign in to manage your QR Menu system.",
         "processing": "Processing...",
         "forgotPasswordDesc": "Forgot your password?",
-        "loginBtnText": "Login"
+        "loginBtnText": "Login",
+        "emailPlaceholder": "example@company.com",
+        "resetTitle": "Password Reset",
+        "resetDesc": "Enter your registered email address.",
+        "resetLinkSent": "A password reset link has been sent to your email address.",
+        "sendResetLink": "Send Reset Link",
+        "sending": "Sending...",
+        "backToLogin": "← Back to Login",
+        "unexpectedError": "An error occurred"
     },
     "client": {
         "menu": "Menu",

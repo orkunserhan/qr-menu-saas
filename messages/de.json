@@ -131,7 +131,15 @@
         "desc": "Melden Sie sich an, um Ihr QR-Menü-System zu verwalten.",
         "processing": "Wird bearbeitet...",
         "forgotPasswordDesc": "Passwort vergessen?",
-        "loginBtnText": "Einloggen"
+        "loginBtnText": "Einloggen",
+        "emailPlaceholder": "beispiel@firma.de",
+        "resetTitle": "Passwort zurücksetzen",
+        "resetDesc": "Geben Sie Ihre registrierte E-Mail-Adresse ein.",
+        "resetLinkSent": "Ein Link zum Zurücksetzen des Passworts wurde an Ihre E-Mail-Adresse gesendet.",
+        "sendResetLink": "Link senden",
+        "sending": "Wird gesendet...",
+        "backToLogin": "← Zurück zur Anmeldung",
+        "unexpectedError": "Ein Fehler ist aufgetreten"
     },
     "client": {
         "menu": "Speisekarte",

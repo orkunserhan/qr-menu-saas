@@ -131,7 +131,15 @@
         "desc": "Accedi per gestire il tuo sistema di menu QR.",
         "processing": "Elaborazione...",
         "forgotPasswordDesc": "Hai dimenticato la password?",
-        "loginBtnText": "Accedi"
+        "loginBtnText": "Accedi",
+        "emailPlaceholder": "esempio@azienda.it",
+        "resetTitle": "Recupera Password",
+        "resetDesc": "Inserisci il tuo indirizzo email registrato.",
+        "resetLinkSent": "Un link per reimpostare la password è stato inviato al tuo indirizzo email.",
+        "sendResetLink": "Invia link di recupero",
+        "sending": "Invio in corso...",
+        "backToLogin": "← Torna al login",
+        "unexpectedError": "Si è verificato un errore"
     },
     "client": {
         "menu": "Menu",

@@ -27,7 +27,7 @@ export default function LoginPage() {
                 throw e;
             }
             console.error(e);
-            setError("Bir hata oluştu: " + (e.message || "Bilinmeyen hata"));
+            setError(t('unexpectedError') + ': ' + (e.message || 'Unknown error'));
         } finally {
             setLoading(false);
         }
@@ -51,7 +51,7 @@ export default function LoginPage() {
                         name="email"
                         type="email"
                         label={t('email')}
-                        placeholder="ornek@sirket.com"
+                        placeholder={t('emailPlaceholder')}
                         required
                     />
 

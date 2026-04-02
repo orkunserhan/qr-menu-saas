@@ -131,7 +131,15 @@
         "desc": "Prihláste sa pre správu vášho QR menu systému.",
         "processing": "Spracúva sa...",
         "forgotPasswordDesc": "Zabudli ste heslo?",
-        "loginBtnText": "Prihlásiť sa"
+        "loginBtnText": "Prihlásiť sa",
+        "emailPlaceholder": "priklad@firma.sk",
+        "resetTitle": "Obnoviť heslo",
+        "resetDesc": "Zadajte svoju registrovanú e-mailovú adresu.",
+        "resetLinkSent": "Odkaz na obnovenie hesla bol odoslaný na vašu e-mailovú adresu.",
+        "sendResetLink": "Odoslať odkaz",
+        "sending": "Odosiela sa...",
+        "backToLogin": "← Späť na prihlásenie",
+        "unexpectedError": "Vyskytla sa chyba"
     },
     "client": {
         "menu": "Menu",

@@ -35,7 +35,7 @@ export default async function OrdersPage({ params }: PageProps) {
                 <div className="flex items-center gap-4">
                     <a href={`/admin/restaurants/${restaurantId}`} className="text-gray-400 hover:text-black dark:hover:text-white transition-colors">← {t('tableLayout')}</a>
                     <div>
-                        <h1 className="font-bold text-xl text-gray-900 dark:text-white">{t('orders')}</h1>
+                        <h1 className="font-bold text-xl text-gray-900 dark:text-white">{t('orders.title')}</h1>
                         <p className="text-xs text-green-600 animate-pulse font-medium">● Live</p>
                     </div>
                 </div>

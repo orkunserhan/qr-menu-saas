@@ -17,12 +17,12 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
     const [activeTab, setActiveTab] = useState<'en' | 'de' | 'sk' | 'it' | 'fr' | 'tr'>('en')
 
     const langs = [
-        { code: 'en', name: 'İngilizce (Default)', mandatory: true },
-        { code: 'de', name: 'Almanca', mandatory: false },
-        { code: 'sk', name: 'Slovakça', mandatory: false },
-        { code: 'it', name: 'İtalyanca', mandatory: false },
-        { code: 'fr', name: 'Fransızca', mandatory: false },
-        { code: 'tr', name: 'Türkçe', mandatory: false }
+        { code: 'en', name: 'English (Default)', mandatory: true },
+        { code: 'de', name: 'German', mandatory: false },
+        { code: 'sk', name: 'Slovak', mandatory: false },
+        { code: 'it', name: 'Italian', mandatory: false },
+        { code: 'fr', name: 'French', mandatory: false },
+        { code: 'tr', name: 'Turkish', mandatory: false }
     ] as const;
 
     async function handleAdd(formData: FormData) {
@@ -55,7 +55,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
         try {
             await deleteProduct(id, restaurantId);
         } catch (err: any) {
-            alert('Silinemedi: ' + err.message);
+            alert('Could not delete: ' + err.message);
         }
     }
 
@@ -63,7 +63,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
         try {
             await toggleProductAvailability(id, restaurantId, !currentStatus);
         } catch (err: any) {
-            alert('Stok güncellenemedi: ' + err.message);
+            alert('Could not update stock: ' + err.message);
         }
     }
 
@@ -173,12 +173,12 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                     <div key={l.code} className={activeTab === l.code ? 'block' : 'hidden'}>
                                         <Textarea
                                             name={`description_${l.code}`}
-                                            placeholder={`${l.name} açıklama yazın...`}
+                                            placeholder={`Write ${l.name} description...`}
                                             required={l.mandatory}
                                             rows={2}
                                             className="bg-white text-sm"
                                         />
-                                        {l.mandatory && <span className="text-[10px] text-red-500 mt-1 block">* Bu alan zorunludur (Sistem fallback olarak kullanır).</span>}
+                                        {l.mandatory && <span className="text-[10px] text-red-500 mt-1 block">* Required field (used as system fallback for all languages).</span>}
                                     </div>
                                 ))}
                             </div>
@@ -240,12 +240,12 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                         <Textarea
                                             name={`description_${l.code}`}
                                             defaultValue={editingProduct.description_translations?.[l.code] || (l.code === 'en' ? editingProduct.description : '')}
-                                            placeholder={`${l.name} açıklama...`}
+                                            placeholder={`Write ${l.name} description...`}
                                             required={l.mandatory}
                                             rows={2}
                                             className="bg-white text-sm"
                                         />
-                                        {l.mandatory && <span className="text-[10px] text-red-500 mt-1 block">* Bu alan zorunludur.</span>}
+                                        {l.mandatory && <span className="text-[10px] text-red-500 mt-1 block">* Required field.</span>}
                                     </div>
                                 ))}
                             </div>

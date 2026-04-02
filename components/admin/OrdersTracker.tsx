@@ -124,7 +124,7 @@ export function OrdersTracker({ restaurantId }: { restaurantId: string }) {
             toast.error(tToast('error') + ": " + result.error);
             setOrders(previousOrders);
         } else {
-            toast.success(tToast('save'));
+            toast.success(tToast('saved'));
         }
     };
 

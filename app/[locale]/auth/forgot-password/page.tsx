@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input'
 import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
 
 export default function ForgotPasswordPage() {
     const t = useTranslations('auth')
@@ -28,7 +29,7 @@ export default function ForgotPasswordPage() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+        <div className="flex flex-col min-h-screen items-center justify-center bg-gray-50 p-4">
             <div className="w-full max-w-sm space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                 <div className="text-center">
                     <h2 className="text-xl font-bold text-gray-900">{t('resetTitle')}</h2>
@@ -54,6 +55,11 @@ export default function ForgotPasswordPage() {
                         {t('backToLogin')}
                     </Link>
                 </div>
+            </div>
+
+            {/* Language Switcher */}
+            <div className="mt-6">
+                <LanguageSwitcher />
             </div>
         </div>
     )

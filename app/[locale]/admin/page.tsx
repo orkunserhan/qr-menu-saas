@@ -106,7 +106,7 @@ export default async function AdminPage() {
 
                 <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{role === 'super_admin' ? tSuper('panelTitle') : t('myRestaurants')}</h1>
+                        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{t('myRestaurants')}</h1>
                         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{t('selectRestaurant')}</p>
                     </div>
                 </div>

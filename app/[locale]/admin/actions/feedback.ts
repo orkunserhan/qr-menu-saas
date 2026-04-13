@@ -13,5 +13,4 @@ export async function deleteFeedback(id: string, restaurantId: string) {
     const supabase = await createClient();
     await supabase.from('feedback').delete().eq('id', id);
     revalidatePath(`/admin/restaurants/${restaurantId}/feedback`);
-    return { success: true };
 }

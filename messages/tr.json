@@ -157,7 +157,15 @@
         "tokenInvalid": "Bu davet bağlantısı geçersiz. Lütfen destek ile iletişime geçin.",
         "tokenExpired": "Bu davet bağlantısının süresi dolmuş. Lütfen destek ile iletişime geçin.",
         "passwordSet": "Şifre başarıyla belirlendi! Artık giriş yapabilirsiniz.",
-        "setPasswordBtn": "Hesabı Aktifleştir"
+        "setPasswordBtn": "Hesabı Aktifleştir",
+        "emailPlaceholder": "ornek@sirket.com",
+        "resetTitle": "Şifrenizi Sıfırlayın",
+        "resetDesc": "Kayıtlı e-posta adresinizi girin.",
+        "resetLinkSent": "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.",
+        "sendResetLink": "Bağlantıyı Gönder",
+        "sending": "Gönderiliyor...",
+        "backToLogin": "← Girişe Dön",
+        "unexpectedError": "Beklenmeyen bir hata oluştu."
     },
     "client": {
         "menu": "MenÃ¼",
@@ -569,6 +577,8 @@
         "editProduct": "ÃœrÃ¼nÃ¼ DÃ¼zenle",
         "changeImage": "Resmi DeÄŸiÅŸtir (Ä°steÄŸe baÄŸlÄ±)",
         "update": "GÃ¼ncelle",
-        "staffEmpty": "HenÃ¼z personel eklenmemiÅŸ."
+        "staffEmpty": "HenÃ¼z personel eklenmemiÅŸ.",
+        "active": "Aktif",
+        "inactive": "Pasif"
     }
 }

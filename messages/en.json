@@ -13,7 +13,10 @@
         "edit": "Edit",
         "add": "Add",
         "yes": "Yes",
-        "no": "No"
+        "no": "No",
+        "phonePlaceholder": "0212 555 55 55",
+        "emailPlaceholder": "example@business.com",
+        "slugPlaceholder": "restaurant-name"
     },
     "admin": {
         "analytics": {

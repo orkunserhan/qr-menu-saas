@@ -46,9 +46,18 @@ export async function createProduct(restaurantId: string, categoryId: string, fo
     const desc_it = formData.get('description_it') as string;
 
     if (!name || isNaN(price)) return { error: 'Geçersiz veri.' };
-    if (!desc_en) return { error: 'English description is mandatory (Fallback).' };
 
-    const description_translations = { en: desc_en, tr: desc_tr || '', de: desc_de || '', sk: desc_sk || '', fr: desc_fr || '', it: desc_it || '' };
+    const description_translations = { 
+        en: desc_en || '', 
+        tr: desc_tr || '', 
+        de: desc_de || '', 
+        sk: desc_sk || '', 
+        fr: desc_fr || '', 
+        it: desc_it || '' 
+    };
+
+    // Dynamic Fallback: Find first non-empty description to use as main fallback
+    const fallbackDesc = desc_en || desc_tr || desc_de || desc_sk || desc_fr || desc_it || '';
 
     let image_url = null;
     if (imageFile && imageFile.size > 0) {
@@ -75,7 +84,7 @@ export async function createProduct(restaurantId: string, categoryId: string, fo
 
     const { error } = await supabase.from('products').insert({
         restaurant_id: restaurantId, category_id: categoryId, name,
-        description: desc_en, description_translations, price,
+        description: fallbackDesc, description_translations, price,
         image_url, video_url, calories, preparation_time, is_available: true, tags
     });
 
@@ -103,15 +112,24 @@ export async function updateProduct(productId: string, restaurantId: string, for
     const desc_it = formData.get('description_it') as string;
 
     if (!name || isNaN(price)) return { error: 'Geçersiz veri.' };
-    if (!desc_en) return { error: 'English description is mandatory (Fallback).' };
 
-    const description_translations = { en: desc_en, tr: desc_tr || '', de: desc_de || '', sk: desc_sk || '', fr: desc_fr || '', it: desc_it || '' };
+    const description_translations = { 
+        en: desc_en || '', 
+        tr: desc_tr || '', 
+        de: desc_de || '', 
+        sk: desc_sk || '', 
+        fr: desc_fr || '', 
+        it: desc_it || '' 
+    };
+
+    // Dynamic Fallback
+    const fallbackDesc = desc_en || desc_tr || desc_de || desc_sk || desc_fr || desc_it || '';
 
     const tagsRaw = formData.get('tags') as string;
     let tags: string[] = [];
     try { tags = tagsRaw ? JSON.parse(tagsRaw) : []; } catch { tags = []; }
 
-    const updates: any = { name, description: desc_en, description_translations, price, video_url, calories, preparation_time, tags };
+    const updates: any = { name, description: fallbackDesc, description_translations, price, video_url, calories, preparation_time, tags };
 
     if (imageFile && imageFile.size > 0) {
         if (!ALLOWED_FORMATS.includes(imageFile.type)) {

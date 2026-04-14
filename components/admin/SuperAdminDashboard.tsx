@@ -182,7 +182,7 @@ export function SuperAdminDashboard({ user }: { user: any }) {
                                     name="restaurant_name"
                                     type="text"
                                     required
-                                    placeholder="Ex: Blue Point"
+                                    placeholder={t('restaurantNamePlaceholder')}
                                     className="px-4 py-2.5 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-indigo-400 transition"
                                 />
                             </div>
@@ -194,7 +194,7 @@ export function SuperAdminDashboard({ user }: { user: any }) {
                                     name="owner_email"
                                     type="email"
                                     required
-                                    placeholder="owner@restaurant.com"
+                                    placeholder={t('ownerEmailPlaceholder')}
                                     className="px-4 py-2.5 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-indigo-400 transition"
                                 />
                             </div>

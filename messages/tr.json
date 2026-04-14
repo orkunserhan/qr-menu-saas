@@ -13,7 +13,10 @@
         "edit": "DÃ¼zenle",
         "add": "Ekle",
         "yes": "Evet",
-        "no": "HayÄ±r"
+        "no": "HayÄ±r",
+        "phonePlaceholder": "0212 555 55 55",
+        "emailPlaceholder": "info@isletme.com",
+        "slugPlaceholder": "restoran-adi"
     },
     "admin": {
         "analytics": {
@@ -379,7 +382,9 @@
         "sending": "Gönderiliyor...",
         "inviteSent": "Davetiye gönderildi! Sahibine şifre belirlemesi için e-posta iletilecek.",
         "inviteError": "Davetiye gönderilirken bir hata oluştu.",
-        "cancel": "İptal"
+        "cancel": "İptal",
+        "restaurantNamePlaceholder": "Örn: Mavi Nokta",
+        "ownerEmailPlaceholder": "sahip@restoran.com"
     },
     "restAdmin": {
         "qr": {

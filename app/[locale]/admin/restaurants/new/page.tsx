@@ -83,14 +83,14 @@ export default function NewRestaurantPage() {
                                 name="phone"
                                 type="tel"
                                 label={tCommon('phone')}
-                                placeholder="0212 555 55 55"
+                                placeholder={tCommon('phonePlaceholder')}
                             />
                             <Input
                                 id="email"
                                 name="email"
                                 type="email"
                                 label={tCommon('email')}
-                                placeholder="info@restoran.com"
+                                placeholder={tCommon('emailPlaceholder')}
                             />
                         </div>
                     </div>
@@ -103,7 +103,7 @@ export default function NewRestaurantPage() {
                                 name="slug"
                                 type="text"
                                 label={t('slug')}
-                                placeholder="ege-mavisi"
+                                placeholder={tCommon('slugPlaceholder')}
                                 required
                             />
                         </div>

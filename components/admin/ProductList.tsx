@@ -196,11 +196,10 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                         <Textarea
                                             name={`description_${l.code}`}
                                             placeholder={`Write ${l.name} description...`}
-                                            required={l.mandatory}
                                             rows={2}
                                             className="bg-white text-sm"
                                         />
-                                        {l.mandatory && <span className="text-[10px] text-red-500 mt-1 block">* Required field (used as system fallback for all languages).</span>}
+                                        {l.mandatory && <span className="text-[10px] text-gray-400 mt-1 block">System will use another language as fallback if this is empty.</span>}
                                     </div>
                                 ))}
                             </div>
@@ -288,11 +287,10 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                             name={`description_${l.code}`}
                                             defaultValue={editingProduct.description_translations?.[l.code] || (l.code === 'en' ? editingProduct.description : '')}
                                             placeholder={`Write ${l.name} description...`}
-                                            required={l.mandatory}
                                             rows={2}
                                             className="bg-white text-sm"
                                         />
-                                        {l.mandatory && <span className="text-[10px] text-red-500 mt-1 block">* Required field.</span>}
+                                        {l.mandatory && <span className="text-[10px] text-gray-400 mt-1 block">Optional (System uses fallback if empty).</span>}
                                     </div>
                                 ))}
                             </div>

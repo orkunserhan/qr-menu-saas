@@ -155,7 +155,16 @@
         "sendResetLink": "Link senden",
         "sending": "Wird gesendet...",
         "backToLogin": "â† ZurÃ¼ck zur Anmeldung",
-        "unexpectedError": "Ein Fehler ist aufgetreten"
+        "unexpectedError": "Ein Fehler ist aufgetreten",
+        "setPasswordTitle": "Richten Sie Ihr Passwort ein",
+        "setPasswordDesc": "Erstellen Sie ein Passwort, um Ihr GoDineQR-Konto zu aktivieren.",
+        "newPassword": "Neues Passwort",
+        "confirmPassword": "Passwort bestätigen",
+        "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+        "tokenInvalid": "Dieser Einladungslink ist ungültig. Bitte wenden Sie sich an den Support.",
+        "tokenExpired": "Dieser Einladungslink ist abgelaufen. Bitte wenden Sie sich an den Support.",
+        "passwordSet": "Passwort erfolgreich festgelegt! Sie können sich nun anmelden.",
+        "setPasswordBtn": "Konto aktivieren"
     },
     "client": {
         "menu": "Speisekarte",
@@ -360,7 +369,16 @@
         "restoreRestaurant": "ðŸ”„ Restaurant wiederherstellen",
         "hardDeleteNow": "ðŸ’£ Jetzt endgÃ¼ltig lÃ¶schen",
         "confirmSoftDelete": "Sind Sie sicher, dass Sie '{name}' zur LÃ¶schung vormerken mÃ¶chten? Es wird in 15 Tagen entfernt.",
-        "confirmHardDelete": "KRITISCHE WARNUNG: Dies wird '{name}' sofort dauerhaft lÃ¶schen. Fortfahren?"
+        "confirmHardDelete": "KRITISCHE WARNUNG: Dies wird '{name}' sofort dauerhaft lÃ¶schen. Fortfahren?",
+        "addRestaurantTitle": "Neues Restaurant einladen",
+        "restaurantNameLabel": "Restaurantname",
+        "ownerEmail": "E-Mail des Inhabers",
+        "defaultLanguage": "Sprache der Willkommens-E-Mail",
+        "sendInvite": "Einladung senden",
+        "sending": "Wird gesendet...",
+        "inviteSent": "Einladung gesendet! Der Inhaber erhält eine E-Mail, um sein Passwort einzurichten.",
+        "inviteError": "Beim Senden der Einladung ist ein Fehler aufgetreten.",
+        "cancel": "Abbrechen"
     },
     "restAdmin": {
         "qr": {
@@ -563,4 +581,3 @@
         "staffEmpty": "Keine Mitarbeiter hinzugefÃ¼gt."
     }
 }
-

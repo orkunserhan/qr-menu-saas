@@ -155,7 +155,16 @@
         "sendResetLink": "Invia link di recupero",
         "sending": "Invio in corso...",
         "backToLogin": "â† Torna al login",
-        "unexpectedError": "Si Ã¨ verificato un errore"
+        "unexpectedError": "Si Ã¨ verificato un errore",
+        "setPasswordTitle": "Imposta la tua password",
+        "setPasswordDesc": "Crea una password per attivare il tuo account GoDineQR.",
+        "newPassword": "Nuova password",
+        "confirmPassword": "Conferma password",
+        "passwordMismatch": "Le password non corrispondono.",
+        "tokenInvalid": "Questo link di invito non è valido. Contatta il supporto.",
+        "tokenExpired": "Questo link di invito è scaduto. Contatta il supporto.",
+        "passwordSet": "Password impostata con successo! Ora puoi accedere.",
+        "setPasswordBtn": "Attiva account"
     },
     "client": {
         "menu": "Menu",
@@ -360,7 +369,16 @@
         "restoreRestaurant": "ðŸ”„ Ripristina Ristorante",
         "hardDeleteNow": "ðŸ’£ Elimina definitivamente ora",
         "confirmSoftDelete": "Sei sicuro di voler segnare '{name}' per l'eliminazione? VerrÃ  rimosso tra 15 giorni.",
-        "confirmHardDelete": "AVVISO CRITICO: Questo distruggerÃ  permanentemente '{name}' immediatamente. Procedere?"
+        "confirmHardDelete": "AVVISO CRITICO: Questo distruggerÃ  permanentemente '{name}' immediatamente. Procedere?",
+        "addRestaurantTitle": "Invita nuovo ristorante",
+        "restaurantNameLabel": "Nome del ristorante",
+        "ownerEmail": "Email del proprietario",
+        "defaultLanguage": "Lingua dell'email di benvenuto",
+        "sendInvite": "Invia invito",
+        "sending": "Invio in corso...",
+        "inviteSent": "Invito inviato! Il proprietario riceverà un'email per impostare la password.",
+        "inviteError": "Si è verificato un errore durante l'invio dell'invito.",
+        "cancel": "Annulla"
     },
     "restAdmin": {
         "qr": {
@@ -563,4 +581,3 @@
         "staffEmpty": "Nessun membro del personale aggiunto."
     }
 }
-

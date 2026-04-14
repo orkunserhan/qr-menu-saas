@@ -155,7 +155,16 @@
         "sendResetLink": "Send Reset Link",
         "sending": "Sending...",
         "backToLogin": "â† Back to Login",
-        "unexpectedError": "An error occurred"
+        "unexpectedError": "An error occurred",
+        "setPasswordTitle": "Set Up Your Password",
+        "setPasswordDesc": "Create a password to activate your GoDineQR account.",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "passwordMismatch": "Passwords do not match.",
+        "tokenInvalid": "This invitation link is invalid. Please contact support.",
+        "tokenExpired": "This invitation link has expired. Please contact support.",
+        "passwordSet": "Password set successfully! You can now log in.",
+        "setPasswordBtn": "Activate Account"
     },
     "client": {
         "menu": "Menu",
@@ -360,7 +369,16 @@
         "restoreRestaurant": "ðŸ”„ Restore Restaurant",
         "hardDeleteNow": "ðŸ’£ Permanently Delete Now",
         "confirmSoftDelete": "Are you sure you want to mark '{name}' for deletion? It will be removed in 15 days.",
-        "confirmHardDelete": "CRITICAL WARNING: This will permanently destroy '{name}' immediately. Proceed?"
+        "confirmHardDelete": "CRITICAL WARNING: This will permanently destroy '{name}' immediately. Proceed?",
+        "addRestaurantTitle": "Invite New Restaurant",
+        "restaurantNameLabel": "Restaurant Name",
+        "ownerEmail": "Owner Email",
+        "defaultLanguage": "Welcome Email Language",
+        "sendInvite": "Send Invitation",
+        "sending": "Sending...",
+        "inviteSent": "Invitation sent! The owner will receive an email to set up their password.",
+        "inviteError": "An error occurred while sending the invitation.",
+        "cancel": "Cancel"
     },
     "restAdmin": {
         "qr": {

@@ -155,7 +155,16 @@
         "sendResetLink": "OdoslaÅ¥ odkaz",
         "sending": "Odosiela sa...",
         "backToLogin": "â† SpÃ¤Å¥ na prihlÃ¡senie",
-        "unexpectedError": "Vyskytla sa chyba"
+        "unexpectedError": "Vyskytla sa chyba",
+        "setPasswordTitle": "Nastavte si heslo",
+        "setPasswordDesc": "Vytvorte si heslo pre aktiváciu vášho účtu GoDineQR.",
+        "newPassword": "Nové heslo",
+        "confirmPassword": "Potvrdiť heslo",
+        "passwordMismatch": "Heslá sa nezhodujú.",
+        "tokenInvalid": "Tento odkaz na pozvánku je neplatný. Kontaktujte podporu.",
+        "tokenExpired": "Platnosť tohto odkazu na pozvánku vypršala. Kontaktujte podporu.",
+        "passwordSet": "Heslo bolo úspešne nastavené! Teraz sa môžete prihlásiť.",
+        "setPasswordBtn": "Aktivovať účet"
     },
     "client": {
         "menu": "Menu",
@@ -360,7 +369,16 @@
         "restoreRestaurant": "ðŸ”„ ObnoviÅ¥ reÅ¡taurÃ¡ciu",
         "hardDeleteNow": "ðŸ’£ Trvalo vymazaÅ¥ teraz",
         "confirmSoftDelete": "Ste si istÃ½, Å¾e chcete oznaÄiÅ¥ '{name}' na vymazanie? Bude odstrÃ¡nenÃ¡ za 15 dnÃ­.",
-        "confirmHardDelete": "KRITICKÃ‰ UPOZORNENIE: Toto trvalo zniÄÃ­ '{name}' okamÅ¾ite. PokraÄovaÅ¥?"
+        "confirmHardDelete": "KRITICKÃ‰ UPOZORNENIE: Toto trvalo zniÄÃ­ '{name}' okamÅ¾ite. PokraÄovaÅ¥?",
+        "addRestaurantTitle": "Pozvať novú reštauráciu",
+        "restaurantNameLabel": "Názov reštaurácie",
+        "ownerEmail": "E-mail majiteľa",
+        "defaultLanguage": "Jazyk uvítacieho e-mailu",
+        "sendInvite": "Odoslať pozvánku",
+        "sending": "Odosiela sa...",
+        "inviteSent": "Pozvánka bola odoslaná! Majiteľ dostane e-mail na nastavenie hesla.",
+        "inviteError": "Pri odosielaní pozvánky sa vyskytla chyba.",
+        "cancel": "Zrušiť"
     },
     "restAdmin": {
         "qr": {
@@ -563,4 +581,3 @@
         "staffEmpty": "Å½iadni zamestnanci neboli pridanÃ­."
     }
 }
-

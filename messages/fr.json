@@ -155,7 +155,16 @@
         "sendResetLink": "Envoyer le lien",
         "sending": "Envoi en cours...",
         "backToLogin": "â† Retour Ã  la connexion",
-        "unexpectedError": "Une erreur est survenue"
+        "unexpectedError": "Une erreur est survenue",
+        "setPasswordTitle": "Configurez votre mot de passe",
+        "setPasswordDesc": "Créez un mot de passe pour activer votre compte GoDineQR.",
+        "newPassword": "Nouveau mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "passwordMismatch": "Les mots de passe ne correspondent pas.",
+        "tokenInvalid": "Ce lien d'invitation est invalide. Veuillez contacter le support.",
+        "tokenExpired": "Ce lien d'invitation a expiré. Veuillez contacter le support.",
+        "passwordSet": "Mot de passe défini avec succès! Vous pouvez maintenant vous connecter.",
+        "setPasswordBtn": "Activer le compte"
     },
     "client": {
         "menu": "Menu",
@@ -360,7 +369,16 @@
         "restoreRestaurant": "ðŸ”„ Restaurer le restaurant",
         "hardDeleteNow": "ðŸ’£ Supprimer dÃ©finitivement maintenant",
         "confirmSoftDelete": "ÃŠtes-vous sÃ»r de vouloir marquer '{name}' pour suppression ? Il sera supprimÃ© dans 15 jours.",
-        "confirmHardDelete": "AVERTISSEMENT CRITIQUE : Cela dÃ©truira dÃ©finitivement '{name}' immÃ©diatement. Continuer ?"
+        "confirmHardDelete": "AVERTISSEMENT CRITIQUE : Cela dÃ©truira dÃ©finitivement '{name}' immÃ©diatement. Continuer ?",
+        "addRestaurantTitle": "Inviter un nouveau restaurant",
+        "restaurantNameLabel": "Nom du restaurant",
+        "ownerEmail": "Email du propriétaire",
+        "defaultLanguage": "Langue de l'e-mail de bienvenue",
+        "sendInvite": "Envoyer l'invitation",
+        "sending": "Envoi en cours...",
+        "inviteSent": "Invitation envoyée! Le propriétaire recevra un e-mail pour configurer son mot de passe.",
+        "inviteError": "Une erreur s'est produite lors de l'envoi de l'invitation.",
+        "cancel": "Annuler"
     },
     "restAdmin": {
         "qr": {
@@ -563,4 +581,3 @@
         "staffEmpty": "Aucun membre du personnel ajoutÃ©."
     }
 }
-

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { toggleRestaurantActiveStatus, deleteRestaurant, restoreRestaurant, hardDeleteRestaurant } from '@/app/[locale]/admin/actions';
+import { toggleRestaurantActiveStatus, deleteRestaurant, restoreRestaurant, hardDeleteRestaurant, createRestaurantWithInvite } from '@/app/[locale]/admin/actions';
 
 // Tip tanımları
 type RestaurantStat = {
@@ -27,6 +27,11 @@ export function SuperAdminDashboard({ user }: { user: any }) {
     const [stats, setStats] = useState<RestaurantStat[]>([]);
     const [loading, setLoading] = useState(true);
     const t = useTranslations('superAdmin');
+
+    // Invite Form State
+    const [showInviteForm, setShowInviteForm] = useState(false);
+    const [inviteLoading, setInviteLoading] = useState(false);
+    const [inviteResult, setInviteResult] = useState<{ success?: boolean; error?: string } | null>(null);
 
     useEffect(() => {
         async function fetchStats() {
@@ -139,10 +144,91 @@ export function SuperAdminDashboard({ user }: { user: any }) {
             <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
                     <h3 className="font-bold text-lg text-gray-900 dark:text-white">{t('allRestaurantsList')}</h3>
-                    <Link href="/admin/restaurants/new">
-                        <Button size="sm">{t('addNew')}</Button>
-                    </Link>
+                    <Button
+                        size="sm"
+                        onClick={() => { setShowInviteForm(v => !v); setInviteResult(null); }}
+                        className={showInviteForm ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white' : ''}
+                    >
+                        {showInviteForm ? '✕ ' + t('cancel') : '✉️ ' + t('addRestaurantTitle')}
+                    </Button>
                 </div>
+
+                {/* ── Davet Formu ── */}
+                {showInviteForm && (
+                    <div className="p-6 bg-indigo-50 dark:bg-indigo-950/30 border-b border-indigo-100 dark:border-indigo-900/50">
+                        <h4 className="font-bold text-indigo-900 dark:text-indigo-300 mb-4 flex items-center gap-2">
+                            <span>✉️</span> {t('addRestaurantTitle')}
+                        </h4>
+                        <form
+                            onSubmit={async (e) => {
+                                e.preventDefault();
+                                setInviteLoading(true);
+                                setInviteResult(null);
+                                const fd = new FormData(e.currentTarget);
+                                const res = await createRestaurantWithInvite(fd);
+                                setInviteResult(res);
+                                setInviteLoading(false);
+                                if (res.success) {
+                                    (e.target as HTMLFormElement).reset();
+                                }
+                            }}
+                            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                        >
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs font-semibold text-indigo-800 dark:text-indigo-300 uppercase tracking-wider">
+                                    {t('restaurantNameLabel')}
+                                </label>
+                                <input
+                                    name="restaurant_name"
+                                    type="text"
+                                    required
+                                    placeholder="Ex: Blue Point"
+                                    className="px-4 py-2.5 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs font-semibold text-indigo-800 dark:text-indigo-300 uppercase tracking-wider">
+                                    {t('ownerEmail')}
+                                </label>
+                                <input
+                                    name="owner_email"
+                                    type="email"
+                                    required
+                                    placeholder="owner@restaurant.com"
+                                    className="px-4 py-2.5 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label className="text-xs font-semibold text-indigo-800 dark:text-indigo-300 uppercase tracking-wider">
+                                    {t('defaultLanguage')}
+                                </label>
+                                <select
+                                    name="default_locale"
+                                    className="px-4 py-2.5 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                                >
+                                    <option value="en">🇬🇧 English</option>
+                                    <option value="de">🇩🇪 Deutsch</option>
+                                    <option value="it">🇮🇹 Italiano</option>
+                                    <option value="sk">🇸🇰 Slovenčina</option>
+                                    <option value="fr">🇫🇷 Français</option>
+                                    <option value="tr">🇹🇷 Türkçe</option>
+                                </select>
+                            </div>
+                            <div className="md:col-span-3 flex items-center gap-4">
+                                <Button type="submit" disabled={inviteLoading} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                                    {inviteLoading ? t('sending') : '✉️ ' + t('sendInvite')}
+                                </Button>
+                                {inviteResult?.success && (
+                                    <span className="text-green-600 dark:text-green-400 font-semibold text-sm flex items-center gap-1">✅ {t('inviteSent')}</span>
+                                )}
+                                {inviteResult?.error && (
+                                    <span className="text-red-600 dark:text-red-400 font-semibold text-sm flex items-center gap-1">❌ {inviteResult.error}</span>
+                                )}
+                            </div>
+                        </form>
+                    </div>
+                )}
+
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 font-medium">

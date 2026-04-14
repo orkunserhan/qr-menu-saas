@@ -148,7 +148,16 @@
         "desc": "QR MenÃ¼ sisteminizi yÃ¶netmek iÃ§in giriÅŸ yapÄ±n.",
         "processing": "Ä°ÅŸleniyor...",
         "forgotPasswordDesc": "Åžifremi unuttun mu?",
-        "loginBtnText": "GiriÅŸ Yap"
+        "loginBtnText": "GiriÅŸ Yap",
+        "setPasswordTitle": "Şifrenizi Belirleyin",
+        "setPasswordDesc": "GoDineQR hesabınızı aktifleştirmek için bir şifre oluşturun.",
+        "newPassword": "Yeni Şifre",
+        "confirmPassword": "Şifreyi Onayla",
+        "passwordMismatch": "Şifreler eşleşmiyor.",
+        "tokenInvalid": "Bu davet bağlantısı geçersiz. Lütfen destek ile iletişime geçin.",
+        "tokenExpired": "Bu davet bağlantısının süresi dolmuş. Lütfen destek ile iletişime geçin.",
+        "passwordSet": "Şifre başarıyla belirlendi! Artık giriş yapabilirsiniz.",
+        "setPasswordBtn": "Hesabı Aktifleştir"
     },
     "client": {
         "menu": "MenÃ¼",
@@ -353,7 +362,16 @@
         "restoreRestaurant": "ðŸ”„ RestoranÄ± Geri YÃ¼kle",
         "hardDeleteNow": "ðŸ’£ Åžimdi KalÄ±cÄ± Olarak Sil",
         "confirmSoftDelete": "'{name}' restoranÄ±nÄ± silinmek Ã¼zere iÅŸaretlemek istediÄŸinize emin misiniz? 15 gÃ¼n sonra kalÄ±cÄ± olarak silinecektir.",
-        "confirmHardDelete": "KRÄ°TÄ°K UYARI: Bu iÅŸlem '{name}' verilerini ÅžÄ°MDÄ° kalÄ±cÄ± olarak yok edecektir. OnaylÄ±yor musunuz?"
+        "confirmHardDelete": "KRÄ°TÄ°K UYARI: Bu iÅŸlem '{name}' verilerini ÅžÄ°MDÄ° kalÄ±cÄ± olarak yok edecektir. OnaylÄ±yor musunuz?",
+        "addRestaurantTitle": "Yeni Restoran Davet Et",
+        "restaurantNameLabel": "Restoran Adı",
+        "ownerEmail": "Sahibinin E-postası",
+        "defaultLanguage": "Hoş Geldin E-postası Dili",
+        "sendInvite": "Davetiye Gönder",
+        "sending": "Gönderiliyor...",
+        "inviteSent": "Davetiye gönderildi! Sahibine şifre belirlemesi için e-posta iletilecek.",
+        "inviteError": "Davetiye gönderilirken bir hata oluştu.",
+        "cancel": "İptal"
     },
     "restAdmin": {
         "qr": {

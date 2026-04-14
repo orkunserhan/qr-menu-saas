@@ -38,3 +38,8 @@ export {
     toggleFeedbackRead,
     deleteFeedback
 } from './actions/feedback';
+
+export {
+    createRestaurantWithInvite
+} from './actions/super-admin';
+

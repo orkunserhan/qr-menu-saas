@@ -127,18 +127,27 @@ export async function signout() {
 }
 
 export async function resetPassword(formData: FormData) {
-    const supabase = await createClient()
-    const email = formData.get('email') as string
+    const email = (formData.get('email') as string)?.trim().toLowerCase();
 
-    if (!email) return { error: "Email is required." }
+    if (!email) return { error: 'Email is required.' };
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/update-password`,
-    })
+    try {
+        // Dinamik import (server-only)
+        const { createResetToken } = await import('@/app/[locale]/auth/set-password/actions');
+        const { sendPasswordResetEmail } = await import('@/lib/mailer');
 
-    if (error) {
-        return { error: error.message }
+        const { token } = await createResetToken(email);
+
+        if (token) {
+            // Dil bilgisi: locale'i headers'tan almaya çalış, yoksa 'en' kullan
+            await sendPasswordResetEmail({ email, token, locale: 'en' });
+        }
+
+        // Güvenlik: Kullanıcının varlığını ifşa etme, her zaman başarı dön
+        return { success: true };
+    } catch (err: any) {
+        console.error('[resetPassword]', err);
+        return { error: 'Failed to send reset email. Please try again later.' };
     }
-
-    return { success: true }
 }
+

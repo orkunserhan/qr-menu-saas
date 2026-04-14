@@ -1,4 +1,20 @@
 {
+    "common": {
+        "phone": "Telefón",
+        "email": "E-mail",
+        "address": "Adresa",
+        "wifiPass": "Heslo WiFi",
+        "optional": "Voliteľné",
+        "cancel": "Zrušiť",
+        "select": "Vybrať",
+        "save": "Uložiť",
+        "close": "Zavrieť",
+        "delete": "Vymazať",
+        "edit": "Upraviť",
+        "add": "Pridať",
+        "yes": "Áno",
+        "no": "Nie"
+    },
     "admin": {
         "analytics": {
             "title": "Výkon a analýzy",

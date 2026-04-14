@@ -1,4 +1,20 @@
 {
+    "common": {
+        "phone": "Telefon",
+        "email": "E-posta",
+        "address": "Adres",
+        "wifiPass": "WiFi Şifresi",
+        "optional": "İsteğe bağlı",
+        "cancel": "İptal",
+        "select": "Seçiniz",
+        "save": "Kaydet",
+        "close": "Kapat",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "add": "Ekle",
+        "yes": "Evet",
+        "no": "Hayır"
+    },
     "admin": {
         "analytics": {
             "title": "Performans ve Analizler",

@@ -69,10 +69,14 @@ export async function createProduct(restaurantId: string, categoryId: string, fo
         image_url = publicUrl;
     }
 
+    const tagsRaw = formData.get('tags') as string;
+    let tags: string[] = [];
+    try { tags = tagsRaw ? JSON.parse(tagsRaw) : []; } catch { tags = []; }
+
     const { error } = await supabase.from('products').insert({
         restaurant_id: restaurantId, category_id: categoryId, name,
         description: desc_en, description_translations, price,
-        image_url, video_url, calories, preparation_time, is_available: true
+        image_url, video_url, calories, preparation_time, is_available: true, tags
     });
 
     if (error) return { error: 'Ürün eklenemedi: ' + error.message };
@@ -103,7 +107,11 @@ export async function updateProduct(productId: string, restaurantId: string, for
 
     const description_translations = { en: desc_en, tr: desc_tr || '', de: desc_de || '', sk: desc_sk || '', fr: desc_fr || '', it: desc_it || '' };
 
-    const updates: any = { name, description: desc_en, description_translations, price, video_url, calories, preparation_time };
+    const tagsRaw = formData.get('tags') as string;
+    let tags: string[] = [];
+    try { tags = tagsRaw ? JSON.parse(tagsRaw) : []; } catch { tags = []; }
+
+    const updates: any = { name, description: desc_en, description_translations, price, video_url, calories, preparation_time, tags };
 
     if (imageFile && imageFile.size > 0) {
         if (!ALLOWED_FORMATS.includes(imageFile.type)) {

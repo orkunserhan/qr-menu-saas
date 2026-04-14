@@ -7,6 +7,15 @@ import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { ImageUploader } from './ImageUploader'
 import { useTranslations } from 'next-intl'
+import { PRODUCT_TAGS } from '@/constants/tags'
+
+// English tag keys to show in admin
+const ADMIN_TAGS = [
+    'vegan', 'vegetarian', 'halal', 'gluten_free',
+    'pork', 'beef', 'lamb', 'chicken', 'seafood',
+    'spicy', 'very_spicy', 'hot', 'cold',
+    'dairy', 'contains_nuts', 'chefs_choice', 'new', 'bestseller', 'alcohol'
+] as const;
 
 export function ProductList({ categoryId, restaurantId, products }: { categoryId: string, restaurantId: string, products: any[] }) {
     const t = useTranslations('components');
@@ -15,6 +24,12 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<'en' | 'de' | 'sk' | 'it' | 'fr' | 'tr'>('en')
+    const [addTags, setAddTags] = useState<string[]>([])
+    const [editTags, setEditTags] = useState<string[]>([])
+
+    function toggleTag(tag: string, current: string[], setter: (v: string[]) => void) {
+        setter(current.includes(tag) ? current.filter(t => t !== tag) : [...current, tag]);
+    }
 
     const langs = [
         { code: 'en', name: 'English (Default)', mandatory: true },
@@ -28,12 +43,14 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
     async function handleAdd(formData: FormData) {
         setLoading(true)
         setErrorMessage(null)
+        formData.set('tags', JSON.stringify(addTags));
         const res = await createProduct(restaurantId, categoryId, formData)
         setLoading(false)
         if (res?.error) {
             setErrorMessage(res.error)
         } else {
             setIsAdding(false)
+            setAddTags([])
         }
     }
 
@@ -41,12 +58,14 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
         if (!editingProduct) return;
         setLoading(true)
         setErrorMessage(null)
+        formData.set('tags', JSON.stringify(editTags));
         const res = await updateProduct(editingProduct.id, restaurantId, formData)
         setLoading(false)
         if (res?.error) {
             setErrorMessage(res.error)
         } else {
             setEditingProduct(null)
+            setEditTags([])
         }
     }
 
@@ -111,7 +130,10 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                     </button>
 
                                     <button
-                                        onClick={() => setEditingProduct(product)}
+                                        onClick={() => {
+                                            setEditingProduct(product);
+                                            setEditTags(product.tags || []);
+                                        }}
                                         className="text-xs text-blue-500 hover:bg-blue-50 p-1.5 rounded transition-colors"
                                     >
                                         ✏️
@@ -183,6 +205,31 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                 ))}
                             </div>
                         </div>
+
+                        {/* TAG SEÇICI */}
+                        <div className="space-y-2 mt-4">
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">🏷️ Etiketler / Tags</label>
+                            <div className="flex flex-wrap gap-1.5">
+                                {ADMIN_TAGS.map(key => {
+                                    const cfg = PRODUCT_TAGS[key];
+                                    if (!cfg) return null;
+                                    const active = addTags.includes(key);
+                                    return (
+                                        <button
+                                            key={key}
+                                            type="button"
+                                            onClick={() => toggleTag(key, addTags, setAddTags)}
+                                            className={`flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-bold border transition-all ${
+                                                active ? cfg.colorClass + ' border-current shadow-sm scale-105' : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            <span>{cfg.icon}</span>
+                                            <span>{cfg.translationKey}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
 
                     {errorMessage && (
@@ -190,7 +237,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                     )}
 
                     <div className="flex justify-end gap-2 mt-4">
-                        <Button type="button" variant="ghost" size="sm" onClick={() => setIsAdding(false)}>{t('cancel')}</Button>
+                        <Button type="button" variant="ghost" size="sm" onClick={() => { setIsAdding(false); setAddTags([]); }}>{t('cancel')}</Button>
                         <Button type="submit" size="sm" disabled={loading}>
                             {loading ? "..." : t('add')}
                         </Button>
@@ -250,6 +297,31 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                                 ))}
                             </div>
                         </div>
+
+                        {/* TAG SEÇICI - EDIT */}
+                        <div className="space-y-2 mt-4">
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">🏷️ Etiketler / Tags</label>
+                            <div className="flex flex-wrap gap-1.5">
+                                {ADMIN_TAGS.map(key => {
+                                    const cfg = PRODUCT_TAGS[key];
+                                    if (!cfg) return null;
+                                    const active = editTags.includes(key);
+                                    return (
+                                        <button
+                                            key={key}
+                                            type="button"
+                                            onClick={() => toggleTag(key, editTags, setEditTags)}
+                                            className={`flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-bold border transition-all ${
+                                                active ? cfg.colorClass + ' border-current shadow-sm scale-105' : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            <span>{cfg.icon}</span>
+                                            <span>{cfg.translationKey}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
 
                     {errorMessage && (
@@ -257,7 +329,7 @@ export function ProductList({ categoryId, restaurantId, products }: { categoryId
                     )}
 
                     <div className="flex justify-end gap-2 mt-4">
-                        <Button type="button" variant="ghost" size="sm" onClick={() => setEditingProduct(null)}>{t('cancel')}</Button>
+                        <Button type="button" variant="ghost" size="sm" onClick={() => { setEditingProduct(null); setEditTags([]); }}>{t('cancel')}</Button>
                         <Button type="submit" size="sm" disabled={loading} className="bg-blue-600 hover:bg-blue-700">
                             {loading ? "..." : t('update')}
                         </Button>

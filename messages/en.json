@@ -1,4 +1,20 @@
 {
+    "common": {
+        "phone": "Phone",
+        "email": "Email",
+        "address": "Address",
+        "wifiPass": "WiFi Password",
+        "optional": "Optional",
+        "cancel": "Cancel",
+        "select": "Select",
+        "save": "Save",
+        "close": "Close",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "yes": "Yes",
+        "no": "No"
+    },
     "admin": {
         "analytics": {
             "title": "Performance & Analytics",

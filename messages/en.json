@@ -146,8 +146,8 @@
         "password": "Password",
         "forgotPassword": "Forgot Password?",
         "submit": "Submit",
-        "title": "Sign in to Panel",
-        "desc": "Sign in to manage your QR Menu system.",
+        "title": "Login to Panel",
+        "desc": "Log in to manage your QR Menu system.",
         "processing": "Processing...",
         "forgotPasswordDesc": "Forgot your password?",
         "loginBtnText": "Login",
@@ -384,86 +384,14 @@
         "cancel": "Cancel"
     },
     "restAdmin": {
-        "qr": {
-            "title": "QR Codes & Tables",
-            "printButton": "ðŸ–¨ï¸ Print / Save as PDF",
-            "tablePrefix": "Table: ",
-            "noTables": "No tables found. Please add tables first."
-        },
         "tableLayout": "Table Layout",
-        "help": {
-            "title": "Need Help?",
-            "step1": "1. Add your restaurant details and tables.",
-            "step2": "2. Create categories and add products with translations.",
-            "step3": "3. Generate and print QR codes for your tables.",
-            "step4": "4. Toggle Lite/Pro mode in settings to enable/disable ordering."
-        },
-        "toast": {
-            "success": "Success!",
-            "error": "An error occurred.",
-            "saved": "Changes saved successfully.",
-            "deleteSuccess": "Deleted successfully.",
-            "loadError": "Failed to load data.",
-            "waiterCallResolved": "Call resolved."
-        },
-        "orders": {
-            "title": "ðŸ”” Orders",
-            "loading": "Loading Orders...",
-            "noActiveOrders": "No Active Orders",
-            "noOrdersDesc": "New orders will appear here in real-time.",
-            "newOrderToast": "New Order Received",
-            "table": "Table",
-            "takeaway": "Takeaway",
-            "startPreparing": "Start Preparing",
-            "serve": "Serve",
-            "closeAccount": "Close Account (Paid)",
-            "cancelOrder": "Cancel Order",
-            "confirmCancel": "Are you sure you want to cancel this order?",
-            "status": {
-                "pending": "Pending",
-                "preparing": "Preparing",
-                "served": "Served",
-                "paid": "Paid",
-                "cancelled": "Cancelled"
-            }
-        },
-        "waiter": {
-            "title": "ðŸ›Žï¸ Waiter Calls",
-            "activePrefix": "Active",
-            "newBadge": "New",
-            "table": "Table",
-            "description": "Manage instant calls, bill requests, and orders from tables.",
-            "emptyTitle": "No pending calls",
-            "emptyDesc": "Every table seems happy for now.",
-            "urgentLabel": "Delayed",
-            "tablePlaceholder": "Not specified",
-            "buttonDone": "Resolved",
-            "types": {
-                "waiter": "Waiter Call",
-                "bill": "Bill Request",
-                "order": "Will Order",
-                "other": "Other Request"
-            }
-        },
-        "analytics": "ðŸ“ˆ Analytics",
-        "comments": "ðŸ’¬ Comments",
-        "feedback": {
-            "title": "Customer Feedback",
-            "back": "Back",
-            "pendingTitle": "Requires Attention",
-            "pendingDesc": "Low-rated feedback listed here. These might not have gone to Google.",
-            "emptyPending": "Awesome! No pending negative reviews. ðŸŽ‰",
-            "otherTitle": "Other Reviews / Google Redirects",
-            "emptyOther": "No high-rated reviews yet.",
-            "googleRedirected": "Redirected to Google",
-            "noComment": "(Rating without comment)",
-            "markRead": "Mark as Read",
-            "markUnread": "Mark as Unread",
-            "delete": "Delete",
-            "deleteConfirm": "Are you sure you want to delete this feedback?"
-        },
-        "settings": "âš™ï¸ Settings",
-        "viewMenu": "âœ¨ View Menu",
+        "reports": "📊 Reports",
+        "orders": "🔔 Orders",
+        "waiter": "🛎️ Waiter",
+        "analytics": "📈 Analytics",
+        "comments": "💬 Comments",
+        "settings": "⚙️ Settings",
+        "viewMenu": "✨ View Menu",
         "menuAndCategories": "Menu & Categories",
         "deleteCategory": "Delete Category",
         "menuEmpty": "Your Menu is Empty",
@@ -584,4 +512,3 @@
         "inactive": "Inactive"
     }
 }
-

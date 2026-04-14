@@ -14,6 +14,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/demo-restaurant',
+        destination: '/demorest',
+        permanent: true,
+      },
+      {
+        source: '/:locale/demo-restaurant',
+        destination: '/:locale/demorest',
+        permanent: true,
+      }
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

@@ -16,6 +16,7 @@ import { PRODUCT_TAGS } from '@/constants/tags';
 import { useRouter, usePathname } from "@/src/i18n/routing";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function ClientMenuPage({
     restaurant,
@@ -254,6 +255,24 @@ export default function ClientMenuPage({
 
     return (
         <div className="light min-h-screen bg-white pb-28 font-sans antialiased text-gray-900 transition-colors duration-300">
+
+            {/* TEST QR CODE FOR DEMOREST DIRECT DEMO (DESKTOP) */}
+            {restaurant.slug === 'demorest' && (
+                <div className="hidden xl:flex fixed top-1/2 -translate-y-1/2 right-8 2xl:right-16 z-40 bg-white dark:bg-gray-900 p-6 rounded-[2rem] shadow-2xl border border-gray-200 dark:border-gray-800 flex-col items-center gap-4 w-72 animate-in slide-in-from-right-10 fade-in duration-500">
+                    <div className="text-center">
+                        <div className="inline-block bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 font-extrabold tracking-wider text-[10px] px-3 py-1 rounded-full mb-3 uppercase">
+                            📱 Mobil Deneyİm
+                        </div>
+                        <h4 className="font-extrabold text-xl text-gray-900 dark:text-white mb-2">Telefonunuzla Tarayın</h4>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
+                            Gerçek bir restoran müşterisi gibi QR menüyü deneyimlemek için telefonunuzun kamerasıyla bu kodu okutun.
+                        </p>
+                    </div>
+                    <div className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100">
+                        <QRCodeSVG value="https://app.godineqr.com/en/demorest" size={180} level="M" />
+                    </div>
+                </div>
+            )}
 
             {/* CAMPAIGN POP-UP MODAL */}
             <AnimatePresence>

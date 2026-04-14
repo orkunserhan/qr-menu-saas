@@ -10,8 +10,8 @@ import "../globals.css";
 const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-inter' });
 
 export const metadata = {
-    title: 'QR Menu System',
-    description: 'Digital Menu Platform'
+    title: 'GodineQR | Digital Menu Platform',
+    description: 'Next Gen Digital Menu Platform'
 };
 
 export default async function LocaleLayout({

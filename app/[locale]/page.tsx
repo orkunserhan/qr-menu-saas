@@ -1,6 +1,7 @@
 import { Link } from '@/src/i18n/routing';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { getTranslations } from 'next-intl/server';
+import { QrCode, Utensils } from 'lucide-react';
 
 export default async function Home() {
   const t = await getTranslations('landing');
@@ -15,8 +16,9 @@ export default async function Home() {
 
       {/* Top Navbar */}
       <nav className="absolute top-0 w-full p-6 flex justify-between items-center z-20 max-w-7xl mx-auto">
-        <div className="font-extrabold text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-          BetterQR
+        <div className="flex items-center gap-2 font-extrabold text-2xl tracking-tighter">
+          <QrCode className="w-8 h-8 text-indigo-400" />
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">Godine<span className="text-indigo-400">QR</span></span>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-400 font-medium tracking-wide">Select Language</span>
@@ -29,7 +31,20 @@ export default async function Home() {
       {/* Main Content */}
       <main className="relative z-10 flex flex-col items-center text-center px-4 max-w-4xl mx-auto mt-10">
 
-        <img src="/upload_1.png" alt="BetterQR Logo" className="h-40 w-auto mb-8 animate-fade-in-down drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] dark:invert" />
+        <div className="relative flex justify-center items-center mb-10 animate-fade-in-down drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">
+          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/30 to-purple-500/30 blur-[40px] rounded-full"></div>
+          <div className="relative bg-white/5 border border-white/10 p-6 rounded-[2rem] backdrop-blur-2xl flex flex-col items-center gap-4 transition-transform hover:scale-105 duration-500">
+            <div className="flex items-center justify-center p-5 bg-gradient-to-br from-white/10 to-white/5 rounded-[1.5rem] border border-white/10 shadow-inner">
+              <QrCode className="w-16 h-16 text-white" strokeWidth={1.5} />
+              <div className="absolute bg-black rounded-full p-2 border border-white/10 shadow-lg">
+                <Utensils className="w-6 h-6 text-indigo-400" strokeWidth={2} />
+              </div>
+            </div>
+            <div className="text-2xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 uppercase">
+              Godine<span className="text-indigo-400">QR</span>
+            </div>
+          </div>
+        </div>
 
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-in-down" style={{ animationDelay: '0.1s' }}>
           <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -67,7 +82,7 @@ export default async function Home() {
 
       {/* Modern Footer/Credits */}
       <footer className="absolute bottom-6 text-gray-500 text-sm font-medium z-10 w-full text-center">
-        © {new Date().getFullYear()} Better Business. {t('footerRights')}
+        © {new Date().getFullYear()} GodineQR. {t('footerRights')}
       </footer>
     </div>
   );
